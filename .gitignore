@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+*.hash
+rockyou.txt
+data/volunteers/
