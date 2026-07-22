@@ -39,6 +39,11 @@ def test_pet_place_partner_custom_use_same_rules_as_name():
         assert "rex123" in results
 
 
-def test_team_still_passes_through_raw():
+def test_known_team_yields_related_tokens():
+    results = list(expand(Token(type="team", value="fenerbahce")))
+    assert results == ["fenerbahce", "Fener", "1907", "Alex", "Aykut"]
+
+
+def test_unknown_team_falls_back_to_raw():
     results = list(expand(Token(type="team", value="Lakers")))
     assert results == ["Lakers"]

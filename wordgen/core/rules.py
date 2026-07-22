@@ -2,9 +2,14 @@
 
 from __future__ import annotations
 
+import json
+from functools import lru_cache
+from pathlib import Path
 from typing import Iterator
 
 from wordgen.core.tokens import Token
+
+_TEAMS_PATH = Path(__file__).resolve().parent.parent / "data" / "teams.json"
 
 
 def expand_date(token: Token) -> Iterator[str]:
@@ -70,6 +75,37 @@ def expand_name(token: Token) -> Iterator[str]:
         yield lower + suffix
 
 
+@lru_cache(maxsize=1)
+def _load_teams() -> dict:
+    with _TEAMS_PATH.open(encoding="utf-8") as f:
+        return json.load(f)
+
+
+def expand_team(token: Token) -> Iterator[str]:
+    """Expand a team token into its related tokens (nickname, founding year, notable names).
+
+    Related tokens are yielded raw, undigested — they get name-rule mangling
+    separately if the operator adds them as their own tokens. Unknown teams
+    (not in data/teams.json) fall back to the raw value.
+    """
+    yield token.value
+
+    entry = _load_teams().get(token.value.lower())
+    if not entry:
+        return
+
+    nickname = entry.get("nickname")
+    if nickname:
+        yield nickname
+
+    founded = entry.get("founded")
+    if founded:
+        yield founded
+
+    for name in entry.get("notable", []):
+        yield name
+
+
 _DISPATCH = {
     "date": expand_date,
     "name": expand_name,
@@ -77,6 +113,7 @@ _DISPATCH = {
     "place": expand_name,
     "partner": expand_name,
     "custom": expand_name,
+    "team": expand_team,
 }
 
 

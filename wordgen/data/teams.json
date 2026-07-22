@@ -1,0 +1,27 @@
+{
+  "fenerbahce": {
+    "nickname": "Fener",
+    "founded": "1907",
+    "notable": ["Alex", "Aykut"]
+  },
+  "galatasaray": {
+    "nickname": "Cimbom",
+    "founded": "1905",
+    "notable": ["Drogba", "Hagi"]
+  },
+  "besiktas": {
+    "nickname": "Kartal",
+    "founded": "1903",
+    "notable": ["Necati"]
+  },
+  "barcelona": {
+    "nickname": "Barca",
+    "founded": "1899",
+    "notable": ["Messi", "Xavi"]
+  },
+  "real madrid": {
+    "nickname": "Los Blancos",
+    "founded": "1902",
+    "notable": ["Ronaldo", "Zidane"]
+  }
+}
