@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import Iterator
 
-from wordgen.core.rules import expand
+from wordgen.core.rules import expand, expand_team
 from wordgen.core.tokens import Token
 
 # Only these type pairs get crossed - arbitrary crossing explodes combinatorially
@@ -41,9 +41,17 @@ def _date_combo_bases(token: Token) -> list[str]:
     return [raw]
 
 
+def _team_combo_bases(token: Token) -> list[str]:
+    """Team combo bases are the related tokens (nickname, founding year, notable
+    names) - the full club name itself is unrealistic as a password component."""
+    return list(expand_team(token))[1:]
+
+
 def _combo_bases(token: Token) -> list[str]:
     if token.type == "date":
         return _date_combo_bases(token)
+    if token.type == "team":
+        return _team_combo_bases(token)
     return [token.value]
 
 

@@ -46,8 +46,10 @@ def test_name_team_produces_both_concatenation_orders():
     tokens = [Token(type="name", value="ahmet"), Token(type="team", value="fenerbahce")]
     results = set(combine(tokens))
 
-    assert "ahmetfenerbahce" in results
-    assert "fenerbahceahmet" in results
+    assert "ahmetFener" in results
+    assert "ahmet1907" in results
+    assert "ahmetfenerbahce" not in results
+    assert "fenerbahceahmet" not in results
 
 
 def test_untouched_types_still_pass_through_individually():
