@@ -10,10 +10,14 @@ def test_date_variants():
     assert expected.issubset(set(results)), f"Missing variants. Got: {results}"
 
 
-def test_name_passthrough():
+def test_name_expansion():
     tokens = [Token(type="name", value="alice")]
     results = list(generate(tokens))
-    assert results == ["alice"]
+    assert "alice" in results
+    assert "ALICE" in results
+    assert "Alice" in results
+    assert "4lice" in results
+    assert "alice123" in results
 
 
 def test_dedup():
