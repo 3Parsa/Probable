@@ -3,4 +3,15 @@ __pycache__/
 *.pyc
 *.hash
 rockyou.txt
-data/volunteers/CLAUDE.md
+
+data/volunteers/
+
+CLAUDE.md
+
+
+candidates.txt
+
+target.yml
+
+*.egg-info/
+

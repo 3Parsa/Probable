@@ -1,0 +1,25 @@
+[project]
+name = "probable"
+version = "0.1.0"
+description = "Targeted password candidate generation and evaluation."
+requires-python = ">=3.10"
+dependencies = [
+    "typer>=0.12",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+probable = "wordgen.cli.main:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["wordgen*"]
+
+[tool.setuptools.package-data]
+"wordgen.data" = ["*.json"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
