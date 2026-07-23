@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import sys
+import tempfile
 from pathlib import Path
 from typing import Optional
 
@@ -12,6 +13,7 @@ import yaml
 
 from wordgen.core.engine import generate as engine_generate
 from wordgen.core.tokens import Token
+from wordgen.eval.harness import HashcatExecutionError, HashcatNotFoundError, evaluate as harness_evaluate
 
 app = typer.Typer(name="probable", help="Generate and evaluate targeted password candidate lists.")
 
@@ -85,9 +87,20 @@ def generate(
 def eval(
     wordlist: Path = typer.Option(..., "--wordlist", exists=True, readable=True, help="Candidate file, one per line."),
     hash: str = typer.Option(..., "--hash", help="Target hash to search for."),
-    algo: str = typer.Option("sha256", "--algo", help="Hash algorithm: sha256, sha1, or md5."),
+    algo: str = typer.Option("sha256", "--algo", help="Hash algorithm: sha256, sha1, or md5. (hashlib path only)"),
+    hashcat: bool = typer.Option(
+        False, "--hashcat", help="Route through the hashcat-backed harness instead of the plain hashlib check."
+    ),
+    mode: Optional[str] = typer.Option(
+        None, "--mode", help="Hashcat hash mode (e.g. 0 for MD5, 1400 for SHA256). Required with --hashcat."
+    ),
+    hashcat_bin: str = typer.Option("hashcat", "--hashcat-bin", help="Path to the hashcat executable."),
 ) -> None:
     """Hash each candidate in a wordlist and report whether/where it matches a target hash."""
+    if hashcat:
+        _eval_with_hashcat(wordlist, hash, mode, hashcat_bin)
+        return
+
     if algo not in _SUPPORTED_ALGOS:
         typer.secho(
             f"Invalid --algo: {algo!r} (expected one of {sorted(_SUPPORTED_ALGOS)})",
@@ -107,6 +120,39 @@ def eval(
             return
 
     typer.echo(f"not found in {total} candidates")
+
+
+def _eval_with_hashcat(wordlist: Path, target_hash: str, mode: Optional[str], hashcat_bin: str) -> None:
+    if not mode:
+        typer.secho("--mode is required when --hashcat is set (e.g. --mode 1400 for SHA256).", fg=typer.colors.RED, err=True)
+        raise typer.Exit(code=1)
+
+    target = target_hash.strip()
+    with tempfile.NamedTemporaryFile("w", suffix=".hash", delete=False) as hash_file:
+        hash_file.write(target + "\n")
+        hash_file_path = Path(hash_file.name)
+
+    try:
+        metrics = harness_evaluate(
+            wordlist=wordlist,
+            hash_file=hash_file_path,
+            mode=mode,
+            target_hashes=[target],
+            hashcat_bin=hashcat_bin,
+        )
+    except (HashcatNotFoundError, HashcatExecutionError) as exc:
+        typer.secho(str(exc), fg=typer.colors.RED, err=True)
+        raise typer.Exit(code=1)
+    finally:
+        hash_file_path.unlink(missing_ok=True)
+
+    position = metrics.positions.get(target)
+    candidate_count = sum(1 for line in wordlist.read_text(encoding="utf-8").splitlines() if line.strip())
+
+    if position is not None:
+        typer.echo(f"cracked at position {position} of {candidate_count}")
+    else:
+        typer.echo(f"not found in {candidate_count} candidates")
 
 
 def main() -> None:

@@ -66,7 +66,18 @@ probable eval --wordlist candidates.txt --hash <hex digest> --algo sha256
 
 - `--wordlist PATH` — candidate file, one candidate per line.
 - `--hash HEX` — target hash to search for.
-- `--algo {sha256,sha1,md5}` (default `sha256`).
+- `--algo {sha256,sha1,md5}` (default `sha256`) — hashlib path only.
 
 Prints `cracked at position N of TOTAL` on a match, or
 `not found in TOTAL candidates` otherwise.
+
+By default this hashes each candidate directly with `hashlib` — fast, no
+external dependencies. Pass `--hashcat --mode N` to instead shell out to a
+real [hashcat](https://hashcat.net/hashcat/) install for the attack (`N` is
+hashcat's hash-mode number, e.g. `0` for MD5, `100` for SHA1, `1400` for
+SHA256). If hashcat isn't installed, this reports a clear error instead of
+crashing. Use `--hashcat-bin` to point at a non-PATH hashcat executable.
+
+For programmatic crack-rate / crack-position metrics across many target
+hashes at once (the core "does the ranking work" benchmark), use
+`wordgen.eval.harness.evaluate()` directly.
