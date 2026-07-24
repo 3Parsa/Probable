@@ -3,9 +3,21 @@ from wordgen.core.rules import expand
 from wordgen.core.tokens import Token
 
 
+def _values(tokens):
+    return {candidate.value for candidate in combine(tokens)}
+
+
+def _combo_values(tokens):
+    return {candidate.value for candidate in combine(tokens) if candidate.is_combo}
+
+
+def _standalone_values(tokens):
+    return {candidate.value for candidate in combine(tokens) if not candidate.is_combo}
+
+
 def test_name_date_produces_both_concatenation_orders():
     tokens = [Token(type="name", value="ahmet"), Token(type="date", value="1998")]
-    results = set(combine(tokens))
+    results = _values(tokens)
 
     assert "ahmet1998" in results
     assert "1998ahmet" in results
@@ -16,9 +28,7 @@ def test_combo_count_stays_small_not_full_cross_product():
     date_token = Token(type="date", value="1998")
     tokens = [name_token, date_token]
 
-    results = set(combine(tokens))
-    standalone = set(expand(name_token)) | set(expand(date_token))
-    combos = results - standalone
+    combos = _combo_values(tokens)
 
     # Base-value cross (2 orders x light mangle) should be a handful, not
     # anywhere near 9 name variants x 16 date variants = 144+.
@@ -27,7 +37,7 @@ def test_combo_count_stays_small_not_full_cross_product():
 
 def test_no_junk_from_crossing_expanded_variants():
     tokens = [Token(type="name", value="ahmet"), Token(type="date", value="1998")]
-    results = set(combine(tokens))
+    results = _values(tokens)
 
     assert "ahmet!1998" not in results
     assert "4hmet1998" not in results
@@ -36,7 +46,7 @@ def test_no_junk_from_crossing_expanded_variants():
 
 def test_pet_date_produces_both_concatenation_orders():
     tokens = [Token(type="pet", value="rex"), Token(type="date", value="2010")]
-    results = set(combine(tokens))
+    results = _values(tokens)
 
     assert "rex2010" in results
     assert "2010rex" in results
@@ -44,7 +54,7 @@ def test_pet_date_produces_both_concatenation_orders():
 
 def test_name_team_produces_both_concatenation_orders():
     tokens = [Token(type="name", value="ahmet"), Token(type="team", value="fenerbahce")]
-    results = set(combine(tokens))
+    results = _values(tokens)
 
     assert "ahmetFener" in results
     assert "ahmet1907" in results
@@ -57,13 +67,14 @@ def test_untouched_types_still_pass_through_individually():
     results = list(combine(tokens))
 
     # Solo token, no pairing partner -> just its own expansion, no crossing.
-    assert results == ["Lakers"]
+    assert [c.value for c in results] == ["Lakers"]
+    assert all(not c.is_combo for c in results)
 
 
 def test_no_cross_for_unlisted_type_pairs():
     # place+partner isn't in the combo list, so no concatenations should appear.
     tokens = [Token(type="place", value="paris"), Token(type="partner", value="mia")]
-    results = set(combine(tokens))
+    results = _values(tokens)
 
     assert "parismia" not in results
     assert "miaparis" not in results
@@ -71,7 +82,7 @@ def test_no_cross_for_unlisted_type_pairs():
 
 def test_iso_date_combos_use_realistic_formats_not_raw_hyphenated_value():
     tokens = [Token(type="name", value="ahmet"), Token(type="date", value="1998-06-12")]
-    results = set(combine(tokens))
+    results = _values(tokens)
 
     assert "ahmet1998-06-12" not in results
     assert "1998-06-12ahmet" not in results
@@ -79,3 +90,20 @@ def test_iso_date_combos_use_realistic_formats_not_raw_hyphenated_value():
 
     assert "ahmet1998" in results
     assert "ahmet12061998" in results
+
+
+def test_combo_flag_distinguishes_cross_products_from_standalone_expansions():
+    tokens = [Token(type="name", value="ahmet"), Token(type="date", value="1998")]
+
+    standalone = _standalone_values(tokens)
+    combos = _combo_values(tokens)
+
+    # Single-token expansions (each token's own case/leet/date-format variants)
+    # must never be tagged as combos.
+    assert "ahmet" in standalone
+    assert "1998" in standalone
+    assert not standalone & combos
+
+    # Cross-token concatenations must be tagged as combos.
+    assert "ahmet1998" in combos
+    assert "1998ahmet" in combos

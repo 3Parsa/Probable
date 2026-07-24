@@ -81,3 +81,25 @@ crashing. Use `--hashcat-bin` to point at a non-PATH hashcat executable.
 For programmatic crack-rate / crack-position metrics across many target
 hashes at once (the core "does the ranking work" benchmark), use
 `wordgen.eval.harness.evaluate()` directly.
+
+## `probable web`
+
+Serves a minimal web GUI (FastAPI + uvicorn) over the same engine used by
+`generate` -- a form in, ranked preview out.
+
+```
+probable web --host 127.0.0.1 --port 8000
+```
+
+- `--host` (default `127.0.0.1`), `--port` (default `8000`).
+- `--reload` — auto-reload on code changes (development only).
+
+Open the printed URL in a browser. The form has one text field per token
+type (`names`, `dates`, `pets`, `teams`, `places`, `partner`, `custom`) --
+comma or newline-separated values -- plus a size dropdown. "Generate" shows
+the top 50 ranked candidates and the total count; "Download full list"
+streams the full ranked wordlist as `candidates.txt`.
+
+Routes: `GET /` (the form), `POST /generate` (form-encoded fields -> JSON
+`{preview, total}`), `GET /download` (same fields as query params -> `.txt`
+download).

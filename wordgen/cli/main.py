@@ -155,6 +155,18 @@ def _eval_with_hashcat(wordlist: Path, target_hash: str, mode: Optional[str], ha
         typer.echo(f"not found in {candidate_count} candidates")
 
 
+@app.command()
+def web(
+    host: str = typer.Option("127.0.0.1", "--host", help="Host to bind the web GUI to."),
+    port: int = typer.Option(8000, "--port", help="Port to bind the web GUI to."),
+    reload: bool = typer.Option(False, "--reload", help="Auto-reload on code changes (development only)."),
+) -> None:
+    """Serve the probable web GUI (FastAPI + uvicorn) on localhost."""
+    import uvicorn
+
+    uvicorn.run("wordgen.web.app:app", host=host, port=port, reload=reload)
+
+
 def main() -> None:
     app()
 

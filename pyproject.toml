@@ -6,6 +6,9 @@ requires-python = ">=3.10"
 dependencies = [
     "typer>=0.12",
     "pyyaml>=6.0",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "python-multipart>=0.0.9",
 ]
 
 [project.scripts]
@@ -20,6 +23,7 @@ include = ["wordgen*"]
 
 [tool.setuptools.package-data]
 "wordgen.data" = ["*.json"]
+"wordgen.web" = ["static/*"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "httpx2"]

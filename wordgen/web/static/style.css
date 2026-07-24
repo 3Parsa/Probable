@@ -1,0 +1,46 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 640px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  color: #222;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  gap: 0.2rem;
+}
+
+input, select {
+  padding: 0.4rem;
+  font-size: 1rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#results {
+  margin-top: 1.5rem;
+}
+
+#preview {
+  font-family: monospace;
+}
