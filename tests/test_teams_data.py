@@ -92,6 +92,37 @@ def test_no_non_latin_script_content_in_teams_file():
                     )
 
 
+def test_no_non_football_teams_in_teams_file():
+    # Regression test: "Scottish Premiership" is an ambiguous league name on
+    # TheSportsDB -- it resolved to the Scottish Rugby Premiership, not the
+    # Scottish football top flight, so teams.json briefly picked up rugby
+    # clubs (Heriots Rugby Club, Jed-Forest, Marr, Musselburgh, Selkirk, ...).
+    # Fixed by pointing fetch_teams.py's LEAGUES at the unambiguous "Scottish
+    # Premier League" name, plus an explicit strSport == "Soccer" filter in
+    # build_teams() as a safety net independent of getting every league name
+    # right. This denylist guards against that exact regression reappearing.
+    teams = _load_teams()
+    known_non_football_clubs = {
+        "heriots rugby club",
+        "jed-forest",
+        "marr",
+        "musselburgh",
+        "selkirk",
+        "currie",
+        "edinburgh academicals",
+        "glasgow hawks",
+        "glasgow hutchesons aloysians",
+        "hawick",
+    }
+    present = known_non_football_clubs & set(teams)
+    assert not present, f"non-football (rugby) teams leaked into teams.json: {present}"
+
+    # And the football teams the corrected league name should have pulled in
+    # are actually present.
+    assert "aberdeen" in teams
+    assert "celtic" in teams
+
+
 def test_api_only_teams_have_no_fabricated_notable_names():
     teams = _load_teams()
     new_team = _first_new_team(teams)

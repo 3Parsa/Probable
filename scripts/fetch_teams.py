@@ -19,6 +19,12 @@ nickname would reach runtime as a dead candidate -- yielded raw, never
 mangled, contributing nothing. Filtering here means the runtime never has to
 special-case it. See _is_latin_script/_nickname_from below.
 
+Every fetched team is also required to have strSport == "Soccer" (see
+REQUIRED_SPORT below) before being added -- some of TheSportsDB's league
+names are ambiguous across sports (e.g. "Scottish Premiership" resolves to
+the Scottish Rugby Premiership, not the football league), so this is a
+second safety net independent of getting every LEAGUES entry exactly right.
+
 Like scripts/extract_weights.py, this is a one-off/offline tool -- re-run
 manually if you want fresher/broader data, not part of the test suite or any
 automated pipeline. Rate-limited to one request per league (~1.5s apart) with
@@ -46,7 +52,12 @@ REQUEST_TIMEOUT_SECONDS = 15
 # key caps each league's team list at ~10 teams (alphabetical) regardless of
 # the league's real size, so ~17 leagues lands in the 100-200 team range this
 # project wants, not tens of thousands. League name strings must match
-# TheSportsDB's own `strLeague` values exactly or the query returns nothing.
+# TheSportsDB's own `strLeague` values exactly or the query returns nothing --
+# and some league names are ambiguous across sports on TheSportsDB (see the
+# Scottish entry below), so every name here has been checked for a single
+# strSport of "Soccer" across its whole result set (see also the explicit
+# strSport filter in build_teams(), a second safety net independent of
+# getting every name right).
 LEAGUES = [
     "English Premier League",
     "Spanish La Liga",
@@ -57,7 +68,12 @@ LEAGUES = [
     "Dutch Eredivisie",
     "Portuguese Primeira Liga",
     "Belgian Pro League",
-    "Scottish Premiership",
+    # NOT "Scottish Premiership" -- that name is ambiguous on TheSportsDB and
+    # resolves to the Scottish Rugby Premiership (10/10 results strSport ==
+    # "Rugby": Heriots Rugby Club, Jed-Forest, Marr, Musselburgh, Selkirk,
+    # ...), not the Scottish football top flight. "Scottish Premier League"
+    # is the unambiguous football league name.
+    "Scottish Premier League",
     "Brazilian Serie A",
     "Argentinian Primera Division",
     "American Major League Soccer",
@@ -66,6 +82,12 @@ LEAGUES = [
     "Swiss Super League",
     "Austrian Bundesliga",
 ]
+
+# Second safety net, independent of getting every league name exactly right:
+# only accept teams whose own strSport is unambiguously "Soccer". Catches any
+# future ambiguous league name the same way "Scottish Premiership" was
+# ambiguous, without relying solely on manually re-verifying every string above.
+REQUIRED_SPORT = "Soccer"
 
 # Hand-curated seed data (wordgen/data/teams.json's original 5 entries).
 # notable-player names here are real and manually researched -- never
@@ -169,6 +191,7 @@ def build_teams() -> tuple[dict, dict]:
         "duplicate_teams_skipped": 0,
         "notable_preserved": set(),
         "non_latin_nicknames_filtered": 0,
+        "non_soccer_teams_skipped": 0,
     }
 
     for i, league in enumerate(LEAGUES):
@@ -186,6 +209,15 @@ def build_teams() -> tuple[dict, dict]:
             if not name:
                 continue
             stats["teams_seen"] += 1
+
+            if team.get("strSport") != REQUIRED_SPORT:
+                # Safety net for an ambiguous/mismatched league name (see the
+                # Scottish Premiership note above) even if LEAGUES ever picks
+                # up another one -- never let a non-football team through
+                # regardless of which league query it came from.
+                stats["non_soccer_teams_skipped"] += 1
+                continue
+
             key = _slug(name)
 
             nickname, was_filtered = _nickname_from(team)
@@ -248,6 +280,7 @@ def main() -> None:
     else:
         print("No hand-seeded teams were matched by this run's fetch -- seed notable-names untouched regardless.")
     print(f"Non-Latin-script alternate names filtered out (nickname omitted or fell back): {stats['non_latin_nicknames_filtered']}")
+    print(f"Non-Soccer teams skipped (strSport safety net): {stats['non_soccer_teams_skipped']}")
 
 
 if __name__ == "__main__":

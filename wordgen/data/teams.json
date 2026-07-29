@@ -1,4 +1,9 @@
 {
+  "aberdeen": {
+    "founded": "1903",
+    "nickname": "",
+    "notable": []
+  },
   "ac milan": {
     "founded": "1899",
     "nickname": "MIL",
@@ -304,6 +309,11 @@
     "nickname": "VIG",
     "notable": []
   },
+  "celtic": {
+    "founded": "1888",
+    "nickname": "CEL",
+    "notable": []
+  },
   "central cordoba de santiago del estero": {
     "founded": "1919",
     "nickname": "Central Córdoba",
@@ -399,11 +409,6 @@
     "nickname": "",
     "notable": []
   },
-  "currie": {
-    "founded": "1970",
-    "nickname": "",
-    "notable": []
-  },
   "dc united": {
     "founded": "1995",
     "nickname": "DC",
@@ -429,6 +434,16 @@
     "nickname": "Deportivo Riestra Asociación de Fomento Barrio Colón",
     "notable": []
   },
+  "dundee": {
+    "founded": "1893",
+    "nickname": "Dundee FC",
+    "notable": []
+  },
+  "dundee united": {
+    "founded": "1909",
+    "nickname": "Dundee Utd",
+    "notable": []
+  },
   "dynamo makhachkala": {
     "founded": "1991",
     "nickname": "Dynamo Makhachkala",
@@ -437,11 +452,6 @@
   "dynamo moscow": {
     "founded": "1923",
     "nickname": "FC Dynamo Moscow",
-    "notable": []
-  },
-  "edinburgh academicals": {
-    "founded": "1857",
-    "nickname": "",
     "notable": []
   },
   "eintracht frankfurt": {
@@ -496,6 +506,11 @@
   },
   "fakel voronezh": {
     "founded": "1947",
+    "nickname": "",
+    "notable": []
+  },
+  "falkirk": {
+    "founded": "1876",
     "nickname": "",
     "notable": []
   },
@@ -600,16 +615,6 @@
     "nickname": "Gil Vicente Futebol Clube",
     "notable": []
   },
-  "glasgow hawks": {
-    "founded": "1866",
-    "nickname": "",
-    "notable": []
-  },
-  "glasgow hutchesons aloysians": {
-    "founded": "2002",
-    "nickname": "",
-    "notable": []
-  },
   "go ahead eagles": {
     "founded": "1902",
     "nickname": "Go Ahead Eagles Deventer",
@@ -635,9 +640,9 @@
     "nickname": "Hamburger SV",
     "notable": []
   },
-  "hawick": {
-    "founded": "1885",
-    "nickname": "",
+  "heart of midlothian": {
+    "founded": "1874",
+    "nickname": "Heart of Midlothian Football Club",
     "notable": []
   },
   "heerenveen": {
@@ -645,9 +650,9 @@
     "nickname": "Sportclub Heerenveen",
     "notable": []
   },
-  "heriots rugby club": {
-    "founded": "1890",
-    "nickname": "",
+  "hibernian": {
+    "founded": "1875",
+    "nickname": "Hibs",
     "notable": []
   },
   "hoffenheim": {
@@ -660,14 +665,14 @@
     "nickname": "INT",
     "notable": []
   },
-  "jed-forest": {
-    "founded": "1885",
-    "nickname": "",
-    "notable": []
-  },
   "juventus": {
     "founded": "1897",
     "nickname": "JUV",
+    "notable": []
+  },
+  "kilmarnock": {
+    "founded": "1869",
+    "nickname": "",
     "notable": []
   },
   "kortrijk": {
@@ -755,18 +760,13 @@
     "nickname": "LYO",
     "notable": []
   },
-  "marr": {
-    "founded": "0",
-    "nickname": "",
-    "notable": []
-  },
   "marseille": {
     "founded": "1899",
     "nickname": "OLM",
     "notable": []
   },
-  "musselburgh": {
-    "founded": "1921",
+  "motherwell": {
+    "founded": "1886",
     "nickname": "",
     "notable": []
   },
@@ -783,6 +783,11 @@
   "paok": {
     "founded": "1926",
     "nickname": "",
+    "notable": []
+  },
+  "rangers": {
+    "founded": "1872",
+    "nickname": "RFC",
     "notable": []
   },
   "rapid vienna": {
@@ -806,11 +811,6 @@
   "scr altach": {
     "founded": "1929",
     "nickname": "SC Rheindorf Altach",
-    "notable": []
-  },
-  "selkirk": {
-    "founded": "1877",
-    "nickname": "",
     "notable": []
   },
   "servette": {
