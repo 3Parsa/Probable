@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import unicodedata
 from functools import lru_cache
 from pathlib import Path
 from typing import Iterator
@@ -10,6 +11,21 @@ from typing import Iterator
 from wordgen.core.tokens import Token
 
 _TEAMS_PATH = Path(__file__).resolve().parent.parent / "data" / "teams.json"
+
+
+def team_lookup_key(name: str) -> str:
+    """Canonical lookup key for a team name: lowercase, diacritics stripped,
+    whitespace collapsed. teams.json's keys are built this same way by
+    scripts/fetch_teams.py's `_slug()` (team names fetched from TheSportsDB
+    routinely carry diacritics, e.g. "Beşiktaş", "Deportivo Alavés", which get
+    ASCII-folded before being stored as the key). expand_team() below MUST use
+    this same normalization when looking a token's value up -- a lookup that
+    only `.lower()`'d without stripping diacritics would silently fail to
+    match teams.json's ASCII-only keys whenever an operator typed a team's
+    real, diacritic-bearing name (exactly the form they're most likely to
+    type, since that's the team's actual name)."""
+    ascii_name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
+    return " ".join(ascii_name.lower().split())
 
 
 def expand_date(token: Token) -> Iterator[str]:
@@ -95,7 +111,7 @@ def expand_team(token: Token) -> Iterator[str]:
     """
     yield token.value
 
-    entry = _load_teams().get(token.value.lower())
+    entry = _load_teams().get(team_lookup_key(token.value))
     if not entry:
         return
 

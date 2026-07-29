@@ -70,3 +70,21 @@ def test_known_team_yields_related_tokens():
 def test_unknown_team_falls_back_to_raw():
     results = list(expand(Token(type="team", value="Lakers")))
     assert results == ["Lakers"]
+
+
+def test_team_lookup_matches_diacritic_bearing_input():
+    # teams.json keys are diacritic-stripped ASCII ("besiktas",
+    # "deportivo alaves"), but an operator is just as likely to type a
+    # team's actual name, diacritics and all -- the lookup must fold those
+    # the same way teams.json's keys were built, not just lowercase.
+    results = list(expand(Token(type="team", value="Beşiktaş")))
+    assert results == ["Beşiktaş", "Kartal", "1903", "Necati"]
+
+    results = list(expand(Token(type="team", value="Deportivo Alavés")))
+    assert results[0] == "Deportivo Alavés"
+    assert "1921" in results  # founding year still resolves via the fold
+
+
+def test_team_lookup_collapses_extra_whitespace():
+    results = list(expand(Token(type="team", value="  Real   Madrid  ")))
+    assert results == ["  Real   Madrid  ", "Los Blancos", "1902", "Ronaldo", "Zidane"]
