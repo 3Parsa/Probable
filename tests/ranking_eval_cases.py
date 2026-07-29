@@ -123,15 +123,45 @@ CASES: list[RankingCase] = [
         lower=("ahmet7", False, None),
         reason="GUARDRAIL: name+real-founding-year combo should beat name+arbitrary-"
         "digit standalone, same as the name+birth-year case above. Tagged combo_kind="
-        "'team' (not 'date') because the founding year is a *team*-related token "
-        "(the combo is built from a name+team token pair) -- the personalization "
-        "signal here is 'the target supports this team', not 'this is the target's "
-        "birth year', even though the resulting string happens to look numeric.",
+        "'team' at the source (the combo is built from a name+team token pair), but "
+        "the ranker's _effective_combo_kind reclassifies it to the 'date' bonus tier "
+        "before scoring, since a bare founding year is shape-identical to a real "
+        "birth year -- see CLAUDE.md's combo-bonus tagging fix.",
+    ),
+    RankingCase(
+        higher=("Ahmet1905", True, "team"),
+        lower=("AhmetHagi", True, "team"),
+        reason="RECLASSIFICATION CASE: Ahmet1905 (Galatasaray's founding year, tagged "
+        "combo_kind='team' at the source since it's a name+team combo) should score "
+        "comparably to an equivalent date-kind combo, not at the smaller team-tier "
+        "bonus, because a bare 4-digit year is structurally identical to a real date "
+        "combo -- it gets the year_like suffix and the larger 'date' bonus via "
+        "_effective_combo_kind's shape-based reclassification. AhmetHagi (a "
+        "non-numeric notable-name combo) has no such shape match and stays at the "
+        "smaller team-tier bonus, so it should lose.",
     ),
     RankingCase(
         higher=("ahmet1", False, None),
         lower=("ahmet!", False, None),
         reason="single trailing digit is a far more common real suffix pattern than "
         "a trailing '!' mangle, holding case pattern constant.",
+    ),
+    RankingCase(
+        higher=("ahmet1999", True, "date"),
+        lower=("ahmet_1999", True, "date"),
+        reason="SEPARATOR CASE: direct concatenation (no joiner) should beat the same "
+        "name+year combo joined with a separator character. Per real RockYou data "
+        "(scripts/extract_weights.py), 'no separator at all' covers ~99.5% of "
+        "candidates vs. underscore (the single most common separator) at ~0.22% -- "
+        "direct concatenation is overwhelmingly the common case, a separator joiner "
+        "is the rarer, more idiosyncratic choice.",
+    ),
+    RankingCase(
+        higher=("ahmet.1999", True, "date"),
+        lower=("ahmet@1999", True, "date"),
+        reason="SEPARATOR CASE: '.' should beat '@' as a joiner between the same "
+        "name+year combo. Per real RockYou data, '.' is used as a separator "
+        "(~0.067%) noticeably more often than '@' (~0.043%) -- confirms the "
+        "intuition that '.' is the more common punctuation-as-joiner choice.",
     ),
 ]

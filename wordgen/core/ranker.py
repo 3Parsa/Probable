@@ -47,7 +47,30 @@ COMBO_BONUS = {
 }
 _DEFAULT_COMBO_BONUS = 0.5  # fallback if combo_kind is ever missing/unrecognized
 
+
+def _effective_combo_kind(value: str, combo_kind: str | None) -> str | None:
+    """Reclassify a "team" combo as "date" when the candidate is itself
+    shaped like a bare 4-digit year (e.g. "ahmet1907", built from a team's
+    founding year in teams.json). combo_kind is tagged by the combiner based
+    on *source* token-type pair (name+team), but the bonus is meant to track
+    how common a personalization *pattern* is -- and a founding year mangled
+    into a candidate is structurally indistinguishable from a real birth
+    year (same year_like suffix/prefix shape), so scoring it at the smaller
+    team-tier bonus purely because of which combiner produced it was an
+    arbitrary penalty, not a real distinction the string itself supports.
+    Non-numeric team tokens (nicknames, notable names) don't match this
+    shape check and keep their original "team" tag. Checked as a post-hoc
+    step here (rather than in the combiner) so it applies uniformly
+    regardless of which combiner produced the (value, is_combo, combo_kind)
+    triple -- including hand-authored ones in the ranking eval set."""
+    if combo_kind != "team":
+        return combo_kind
+    if _YEAR_SUFFIX_RE.search(value) or _YEAR_PREFIX_RE.match(value):
+        return "date"
+    return combo_kind
+
 _YEAR_SUFFIX_RE = re.compile(r"(19|20)\d{2}$")
+_YEAR_PREFIX_RE = re.compile(r"^(19|20)\d{2}")
 
 _LEET_KEYS = {
     "4": "4_for_a",
@@ -55,7 +78,42 @@ _LEET_KEYS = {
     "1": "1_for_i",
     "0": "0_for_o",
     "5": "5_for_s",
+    "@": "@_for_a",
+    "$": "$_for_s",
 }
+
+# Separator characters in their standalone-trailing-suffix role (e.g. "bob_",
+# "bob$") - distinct from the same characters' combiner-joiner role (scored
+# under "separators" below) and from @/$'s unrelated leet-substitution role
+# (scored under "leet_subs"). All three categories are looked up and stripped
+# independently so none of them double-count the same character.
+_SUFFIX_CHAR_NAMES = {
+    "_": "underscore",
+    ".": "dot",
+    "-": "hyphen",
+    "#": "hash",
+    "$": "dollar",
+    "@": "at_symbol",
+}
+
+# Heuristic for "a separator character joining an alphabetic run to a numeric
+# run" (e.g. "ahmet_1907", "1907@ahmet") - mirrors the same heuristic in
+# scripts/extract_weights.py used to derive the real frequencies for this
+# category. Deliberately simple: full-string match, single separator char,
+# alpha on one side and digits on the other.
+_SEPARATOR_RE = re.compile(
+    r"^[A-Za-z]+([_.\-#$@])\d+$|^\d+([_.\-#$@])[A-Za-z]+$"
+)
+
+
+def _classify_separator(candidate: str) -> tuple[str | None, str | None]:
+    """Returns (category_name, separator_char), or (None, None) if the
+    candidate doesn't look like an alpha/digit run joined by a separator."""
+    match = _SEPARATOR_RE.match(candidate)
+    if not match:
+        return None, None
+    sep_char = match.group(1) or match.group(2)
+    return _SUFFIX_CHAR_NAMES[sep_char], sep_char
 
 
 @lru_cache(maxsize=1)
@@ -96,6 +154,8 @@ def _classify_suffix(candidate: str) -> str | None:
         return "question_mark"
     if candidate[-1:].isdigit() and not candidate[-2:-1].isdigit():
         return "single_trailing_digit"
+    if candidate[-1:] in _SUFFIX_CHAR_NAMES:
+        return _SUFFIX_CHAR_NAMES[candidate[-1:]]
     return None
 
 
@@ -105,6 +165,12 @@ _SUFFIX_LENGTHS = {
     "bang": 1,
     "question_mark": 1,
     "single_trailing_digit": 1,
+    "underscore": 1,
+    "dot": 1,
+    "hyphen": 1,
+    "hash": 1,
+    "dollar": 1,
+    "at_symbol": 1,
 }
 
 
@@ -156,6 +222,26 @@ def _leet_signal(candidate: str, leet_subs: dict) -> float:
     return max(weights_found)
 
 
+def _no_separator_weight(separators: dict) -> float:
+    """Implied weight for 'no combiner-joiner separator present' -- mirrors
+    _no_leet_weight's reasoning exactly: separator usage, like leet subs, is
+    an individually rare structural feature across the whole population (most
+    candidates are either a single token or a direct concatenation with no
+    joiner at all), so its complement is the overwhelmingly common default,
+    not a rare fallback."""
+    return max(1.0 - sum(separators.values()), _BASELINE)
+
+
+def _separator_signal(candidate: str, separators: dict) -> float:
+    """Weight for the separator category, mirroring _leet_signal: classify to
+    the one separator (if any) the candidate matches, or fall back to the
+    'no separator' weight."""
+    name, _ = _classify_separator(candidate)
+    if name is None:
+        return _no_separator_weight(separators)
+    return _safe_weight(separators.get(name))
+
+
 def _safe_weight(weight: float | None) -> float:
     """Fall back to the baseline for a missing or non-positive weight, so a
     single category never zeroes out (or log-blows-up) the combined score."""
@@ -183,10 +269,12 @@ def _normalize(log_value: float, bounds: tuple[float, float]) -> float:
 
 def _compute_bounds(weights: dict) -> dict[str, tuple[float, float]]:
     leet_subs = weights.get("leet_subs", {})
+    separators = weights.get("separators", {})
     return {
         "case_patterns": _category_log_bounds(weights.get("case_patterns", {})),
         "suffixes": _category_log_bounds(weights.get("suffixes", {})),
         "leet_subs": _category_log_bounds(leet_subs, floor=_no_leet_weight(leet_subs)),
+        "separators": _category_log_bounds(separators, floor=_no_separator_weight(separators)),
     }
 
 
@@ -198,6 +286,7 @@ def _score(candidate: str, weights: dict, bounds: dict[str, tuple[float, float]]
     case_patterns = weights.get("case_patterns", {})
     suffixes = weights.get("suffixes", {})
     leet_subs = weights.get("leet_subs", {})
+    separators = weights.get("separators", {})
 
     pattern = _classify_case_pattern(candidate)
     case_score = _safe_weight(case_patterns.get(pattern)) if pattern else _BASELINE
@@ -207,11 +296,22 @@ def _score(candidate: str, weights: dict, bounds: dict[str, tuple[float, float]]
     suffix_score = _safe_weight(suffixes.get(suffix)) if suffix else _BASELINE
     suffix_norm = _normalize(math.log(suffix_score), bounds["suffixes"])
 
+    sep_score = _separator_signal(candidate, separators)
+    sep_norm = _normalize(math.log(sep_score), bounds["separators"])
+
+    # Strip both the recognized trailing suffix AND the joiner separator (if
+    # any) before leet detection - neither a suffix's own digits nor a
+    # separator character (some of which, @ and $, double as leet-substitution
+    # digits) were ever meant to read as a letter substitution. Keeps the
+    # three categories from double-counting the same character.
     leet_candidate = _strip_recognized_suffix(candidate, suffix)
+    _, sep_char = _classify_separator(candidate)
+    if sep_char:
+        leet_candidate = leet_candidate.replace(sep_char, "", 1)
     leet_score = _leet_signal(leet_candidate, leet_subs)
     leet_norm = _normalize(math.log(leet_score), bounds["leet_subs"])
 
-    return case_norm + suffix_norm + leet_norm
+    return case_norm + suffix_norm + leet_norm + sep_norm
 
 
 def rank(candidates: Iterable[Union[Candidate, tuple[str, bool, Union[str, None]]]]) -> list[str]:
@@ -229,7 +329,8 @@ def rank(candidates: Iterable[Union[Candidate, tuple[str, bool, Union[str, None]
     for value, is_combo, combo_kind in candidates:
         score = _score(value, weights, bounds)
         if is_combo:
-            score += COMBO_BONUS.get(combo_kind, _DEFAULT_COMBO_BONUS)
+            effective_kind = _effective_combo_kind(value, combo_kind)
+            score += COMBO_BONUS.get(effective_kind, _DEFAULT_COMBO_BONUS)
         scored.append((value, score))
     scored.sort(key=lambda pair: pair[1], reverse=True)
     return [value for value, _ in scored]

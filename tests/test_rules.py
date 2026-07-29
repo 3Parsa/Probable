@@ -22,12 +22,35 @@ def test_leet_substitutions_are_single_swap():
     assert "4l3ss1o0" not in results
 
 
+def test_new_leet_substitutions_single_swap():
+    results = set(expand(Token(type="name", value="alessio")))
+
+    assert "4lessio" in results  # existing a -> 4 still yielded
+    assert "@lessio" in results  # new a -> @
+    assert "ale55io" in results  # existing s -> 5 still yielded
+    assert "ale$$io" in results  # new s -> $
+
+    # still never combined with each other or with other letters' subs
+    assert "@l3ss1o0" not in results
+    assert "4le$$io" not in results
+
+
 def test_affixes():
     results = set(expand(Token(type="name", value="bob")))
     assert "bob123" in results
     assert "bob!" in results
     assert "bob?" in results
     assert "bob1" in results
+
+
+def test_new_separator_suffixes():
+    results = set(expand(Token(type="name", value="bob")))
+    assert "bob_" in results
+    assert "bob." in results
+    assert "bob-" in results
+    assert "bob#" in results
+    assert "bob$" in results
+    assert "bob@" in results
 
 
 def test_pet_place_partner_custom_use_same_rules_as_name():

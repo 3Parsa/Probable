@@ -40,14 +40,18 @@ def expand_date(token: Token) -> Iterator[str]:
 
 
 _LEET_MAP = {
-    "a": "4",
-    "e": "3",
-    "i": "1",
-    "o": "0",
-    "s": "5",
+    "a": ["4", "@"],
+    "e": ["3"],
+    "i": ["1"],
+    "o": ["0"],
+    "s": ["5", "$"],
 }
 
-_AFFIXES = ["123", "!", "?", "1"]
+# Trailing affixes: numeric/punctuation suffixes, plus the separator characters
+# in their standalone-suffix role (see combiner.py for their other role, joining
+# combo bases together - the two roles are scored as distinct categories in
+# ranker.py, never conflated).
+_AFFIXES = ["123", "!", "?", "1", "_", ".", "-", "#", "$", "@"]
 
 
 def expand_name(token: Token) -> Iterator[str]:
@@ -67,9 +71,10 @@ def expand_name(token: Token) -> Iterator[str]:
     if capitalized != lower and capitalized != upper:
         yield capitalized
 
-    for char, digit in _LEET_MAP.items():
+    for char, digits in _LEET_MAP.items():
         if char in lower:
-            yield lower.replace(char, digit)
+            for digit in digits:
+                yield lower.replace(char, digit)
 
     for suffix in _AFFIXES:
         yield lower + suffix

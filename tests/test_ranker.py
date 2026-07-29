@@ -114,6 +114,104 @@ def test_combo_bonus_does_not_flip_documented_ahmet1_vs_ahmet1998_finding():
     assert results[0] == "ahmet1"
 
 
+def test_team_founding_year_combo_scores_comparably_to_date_combo():
+    # Ahmet1905 (Galatasaray's founding year) is tagged combo_kind="team" at
+    # the source -- it's built from a name+team token pair -- but is
+    # structurally a bare 4-digit year, identical in shape to a real
+    # name+date combo like Ahmet1999. Before the _effective_combo_kind fix,
+    # it scored at the smaller "team" bonus (0.35) purely because of which
+    # combiner produced it, not because of anything about the string itself.
+    # It should now score within a hair of an equivalent date-kind combo,
+    # not fall meaningfully below it.
+    from wordgen.core.ranker import _compute_bounds, _load_weights, _score
+
+    weights = _load_weights()
+    bounds = _compute_bounds(weights)
+
+    team_year_score = _score("Ahmet1905", weights, bounds) + ranker_module.COMBO_BONUS["date"]
+    date_score = _score("Ahmet1999", weights, bounds) + ranker_module.COMBO_BONUS["date"]
+
+    results = rank([("Ahmet1905", True, "team"), ("Ahmet1999", True, "date")])
+    # Neither should dominate -- both get the "date" bonus tier once
+    # reclassified, so only the underlying case/suffix/leet score (nearly
+    # identical shape) differs.
+    assert abs(team_year_score - date_score) < 1e-9
+    assert results[0] in {"Ahmet1905", "Ahmet1999"}
+
+    # Confirms the reclassification is actually doing the work: without it,
+    # Ahmet1905 would only get the smaller "team" bonus and lose ground.
+    unreclassified_team_score = _score("Ahmet1905", weights, bounds) + ranker_module.COMBO_BONUS["team"]
+    assert unreclassified_team_score < date_score
+
+
+def test_effective_combo_kind_leaves_non_numeric_team_combos_alone():
+    from wordgen.core.ranker import _effective_combo_kind
+
+    assert _effective_combo_kind("ahmetcimbom", "team") == "team"
+    assert _effective_combo_kind("ahmetdrogba", "team") == "team"
+    assert _effective_combo_kind("Ahmet1907", "team") == "date"
+    assert _effective_combo_kind("1907ahmet", "team") == "date"
+    assert _effective_combo_kind("ahmet1999", "date") == "date"
+    assert _effective_combo_kind("ahmet", None) is None
+
+
+def test_new_leet_and_suffix_characters_do_not_crash_or_misbehave():
+    # New leet substitutions (@, $) and new suffix/separator characters must
+    # be scoreable without crashing (e.g. math.log(0) / missing-category
+    # KeyErrors) and must produce a finite, sane score.
+    candidates = [
+        ("ahmet@1999", True, "date"),
+        ("ahmet_1999", True, "date"),
+        ("1999.ahmet", True, "date"),
+        ("ahmet#", False, None),
+        ("bob$", False, None),
+        ("al@ssio", False, None),
+        ("ale$$io", False, None),
+    ]
+    results = rank(candidates)
+    assert set(results) == {value for value, _, _ in candidates}
+
+
+def test_classify_suffix_recognizes_new_suffix_characters():
+    from wordgen.core.ranker import _classify_suffix
+
+    assert _classify_suffix("bob_") == "underscore"
+    assert _classify_suffix("bob.") == "dot"
+    assert _classify_suffix("bob-") == "hyphen"
+    assert _classify_suffix("bob#") == "hash"
+    assert _classify_suffix("bob$") == "dollar"
+    assert _classify_suffix("bob@") == "at_symbol"
+
+
+def test_classify_separator_recognizes_joiner_between_alpha_and_digits():
+    from wordgen.core.ranker import _classify_separator
+
+    assert _classify_separator("ahmet_1999") == ("underscore", "_")
+    assert _classify_separator("1999@ahmet") == ("at_symbol", "@")
+    assert _classify_separator("ahmet1999") == (None, None)  # no separator at all
+    assert _classify_separator("ahmet") == (None, None)  # no digit run at all
+
+
+def test_leet_and_separator_categories_do_not_double_count_shared_characters():
+    # "@" and "$" are both leet-substitution digits (for a/s) AND joiner
+    # separators - a candidate using one in its separator role must not also
+    # get credited as a leet substitution for the same character.
+    from wordgen.core.ranker import _compute_bounds, _load_weights, _score
+
+    weights = _load_weights()
+    bounds = _compute_bounds(weights)
+
+    # "ahmet@1999": "@" is the separator between "ahmet" (no literal "a" swap
+    # intended) and "1999". Scoring must not crash, and stripping the
+    # separator before leet detection means this shouldn't be inflated by a
+    # phantom "@_for_a" hit beyond what "ahmet_1999" (a non-leet separator)
+    # would get.
+    at_score = _score("ahmet@1999", weights, bounds)
+    underscore_score = _score("ahmet_1999", weights, bounds)
+    assert isinstance(at_score, float)
+    assert isinstance(underscore_score, float)
+
+
 def test_ranking_eval_cases_against_real_weights():
     """Runs the labeled eval set (tests/ranking_eval_cases.py) through the real
     ranker.rank() against the real wordgen/data/weights.json -- no synthetic

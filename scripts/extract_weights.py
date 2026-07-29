@@ -18,7 +18,32 @@ SOURCE_PATH = Path("/tmp/rockyou-withcount.txt")
 OUTPUT_PATH = Path(__file__).resolve().parent.parent / "wordgen" / "data" / "weights.json"
 
 YEAR_SUFFIX_RE = re.compile(r"(19|20)\d{2}$")
-LEET_PAIRS = {"4": "a", "3": "e", "1": "i", "0": "o", "5": "s"}
+LEET_PAIRS = {"4": "a", "3": "e", "1": "i", "0": "o", "5": "s", "@": "a", "$": "s"}
+
+SUFFIX_CHAR_NAMES = {
+    "_": "underscore",
+    ".": "dot",
+    "-": "hyphen",
+    "#": "hash",
+    "$": "dollar",
+    "@": "at_symbol",
+}
+
+# Heuristic for "separator joining an alphabetic run to a numeric run" (e.g.
+# "ahmet_1907", "1907@ahmet") - mirrors wordgen/core/ranker.py's
+# _SEPARATOR_RE exactly, so the extracted frequencies match what the ranker
+# will actually look up.
+SEPARATOR_RE = re.compile(
+    r"^[A-Za-z]+([_.\-#$@])\d+$|^\d+([_.\-#$@])[A-Za-z]+$"
+)
+
+
+def classify_separator(password: str) -> str | None:
+    match = SEPARATOR_RE.match(password)
+    if not match:
+        return None
+    sep_char = match.group(1) or match.group(2)
+    return SUFFIX_CHAR_NAMES[sep_char]
 
 
 def load_counts(path: Path) -> dict[str, int]:
@@ -80,6 +105,7 @@ def extract_weights(counts: dict[str, int]) -> dict:
     case_applicable_total = 0
     suffix_totals: dict[str, int] = defaultdict(int)
     leet_totals: dict[str, int] = defaultdict(int)
+    separator_totals: dict[str, int] = defaultdict(int)
 
     for password, count in counts.items():
         # --- case pattern ---
@@ -99,6 +125,16 @@ def extract_weights(counts: dict[str, int]) -> dict:
             suffix_totals["question_mark"] += count
         if has_single_trailing_digit(password):
             suffix_totals["single_trailing_digit"] += count
+        for char, name in SUFFIX_CHAR_NAMES.items():
+            if password.endswith(char):
+                suffix_totals[name] += count
+
+        # --- separator usage (approximate proxy) ---
+        # A single special character joining an alphabetic run to a numeric
+        # run, either order - see classify_separator/SEPARATOR_RE above.
+        sep_name = classify_separator(password)
+        if sep_name:
+            separator_totals[sep_name] += count
 
         # --- leet substitutions (approximate proxy) ---
         # A password containing a leet digit "counts" toward that substitution
@@ -123,12 +159,17 @@ def extract_weights(counts: dict[str, int]) -> dict:
         key: (value / grand_total if grand_total else 0.0)
         for key, value in leet_totals.items()
     }
+    separators = {
+        key: (value / grand_total if grand_total else 0.0)
+        for key, value in separator_totals.items()
+    }
 
     return {
         "grand_total_weight": grand_total,
         "case_patterns": case_patterns,
         "suffixes": suffixes,
         "leet_subs": leet_subs,
+        "separators": separators,
     }
 
 
@@ -159,6 +200,10 @@ def main() -> None:
 
     print("\nLeet substitutions:")
     for key, value in sorted(weights["leet_subs"].items(), key=lambda kv: -kv[1]):
+        print(f"  {key:20s} {value:.4f}")
+
+    print("\nSeparators:")
+    for key, value in sorted(weights["separators"].items(), key=lambda kv: -kv[1]):
         print(f"  {key:20s} {value:.4f}")
 
 
