@@ -87,4 +87,8 @@ def test_team_lookup_matches_diacritic_bearing_input():
 
 def test_team_lookup_collapses_extra_whitespace():
     results = list(expand(Token(type="team", value="  Real   Madrid  ")))
-    assert results == ["  Real   Madrid  ", "Los Blancos", "1902", "Ronaldo", "Zidane"]
+    # "Los Blancos" (a multi-word nickname) has its internal whitespace
+    # stripped before being yielded -- see test_multiword_nickname_never_
+    # yields_a_literal_space below for why a literal space is never itself
+    # a candidate.
+    assert results == ["  Real   Madrid  ", "LosBlancos", "1902", "Ronaldo", "Zidane"]

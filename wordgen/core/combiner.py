@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from typing import Iterator, NamedTuple
 
-from wordgen.core.rules import expand, expand_team
+from wordgen.core.rules import expand, team_related_values
 from wordgen.core.tokens import Token
 
 
@@ -94,10 +94,47 @@ def _date_combo_bases(token: Token) -> list[str]:
     return [raw]
 
 
+def expand_multiword_value(value: str) -> list[str]:
+    """A value containing internal whitespace (real example: several teams'
+    nicknames are two words, e.g. Bayern Munich's "Die Bayern") can't be
+    used as-is -- nobody puts a literal space in a real password. Expands
+    it into the same "direct-concat + one variant per separator character"
+    shape _joined_combos already produces when crossing two *different*
+    tokens, so a multi-word value's own internal words get joined exactly
+    the same way -- e.g. "Die Bayern" -> ["DieBayern", "Die_Bayern",
+    "Die.Bayern", ...]. Single-word values pass through unchanged (the
+    overwhelmingly common case).
+
+    Used in two places, for two different reasons: _team_combo_bases below
+    feeds each variant into the normal base cross-product as its own base,
+    so crossing "Bardiya" against the "Die_Bayern" variant naturally
+    produces "Bardiya_Die_Bayern" (outer "_" join + already "_"-joined
+    inner words) alongside "BardiyaDieBayern" (outer direct-concat +
+    stripped inner). engine.py's _normalize_spaces also calls this directly
+    as a final catch-all safety net for *any* remaining space-containing
+    candidate regardless of source (e.g. a raw operator-typed multi-word
+    team/place/etc. value echoed as a standalone candidate) -- see its
+    docstring for why that backstop exists on top of, not instead of,
+    fixing each source (this function) individually."""
+    words = value.split()
+    if len(words) < 2:
+        return [value]
+    return ["".join(words)] + [sep.join(words) for sep in _SEPARATORS]
+
+
 def _team_combo_bases(token: Token) -> list[str]:
     """Team combo bases are the related tokens (nickname, founding year, notable
-    names) - the full club name itself is unrealistic as a password component."""
-    return list(expand_team(token))[1:]
+    names) - the full club name itself is unrealistic as a password component.
+    Uses team_related_values() (raw values, spaces intact) rather than
+    expand_team()'s own yielded candidates -- expand_team() already strips a
+    multi-word nickname down to one stripped-together form for its own
+    standalone-candidate purposes, which would throw away the word
+    boundaries expand_multiword_value needs to build separator-joined
+    variants."""
+    bases: list[str] = []
+    for value in team_related_values(token):
+        bases.extend(expand_multiword_value(value))
+    return bases
 
 
 def _combo_bases(token: Token) -> list[str]:

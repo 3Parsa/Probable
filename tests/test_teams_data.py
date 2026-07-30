@@ -228,7 +228,10 @@ def test_arbitrary_new_team_resolves_through_expand_team():
 
     assert results[0] == new_team
     if entry["nickname"]:
-        assert entry["nickname"] in results
+        # A multi-word nickname (e.g. "Die Geißböcke") has its internal
+        # whitespace stripped before being yielded -- a literal space is
+        # never itself a candidate, see rules.py's expand_team().
+        assert "".join(entry["nickname"].split()) in results
     if entry["founded"]:
         assert entry["founded"] in results
     assert len(results) == 1 + bool(entry["nickname"]) + bool(entry["founded"])

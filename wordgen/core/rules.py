@@ -102,29 +102,56 @@ def _load_teams() -> dict:
         return json.load(f)
 
 
+def team_related_values(token: Token) -> list[str]:
+    """Raw nickname/founding-year/notable-name values for a known team,
+    exactly as stored in teams.json -- no whitespace normalization applied.
+    Shared by expand_team() below (which strips a multi-word nickname's
+    internal whitespace before yielding it as a standalone candidate -- see
+    there for why) and combiner._team_combo_bases() (which needs the
+    original word boundaries preserved to build separator-joined nickname
+    variants, e.g. "Die Bayern" -> "Die_Bayern", not just the already-
+    stripped "DieBayern"), so both work off the same teams.json lookup
+    without duplicating it. Empty list for an unknown team."""
+    entry = _load_teams().get(team_lookup_key(token.value))
+    if not entry:
+        return []
+
+    values = []
+    nickname = entry.get("nickname")
+    if nickname:
+        values.append(nickname)
+
+    founded = entry.get("founded")
+    if founded:
+        values.append(founded)
+
+    values.extend(entry.get("notable", []))
+    return values
+
+
 def expand_team(token: Token) -> Iterator[str]:
     """Expand a team token into its related tokens (nickname, founding year, notable names).
 
     Related tokens are yielded raw, undigested — they get name-rule mangling
     separately if the operator adds them as their own tokens. Unknown teams
     (not in data/teams.json) fall back to the raw value.
+
+    A multi-word value (real example: several teams' nicknames are two
+    words, e.g. Bayern Munich's "Die Bayern", Liverpool's "The Reds") has
+    its internal whitespace stripped before being yielded -- nobody puts a
+    literal space in a real password, so "Die Bayern" is never itself a
+    candidate; it becomes "DieBayern" here. (combiner._team_combo_bases()
+    separately builds separator-joined variants like "Die_Bayern" for the
+    combo case, from the same raw value via team_related_values() above --
+    this function only needs the simple stripped form, since a standalone
+    related-token candidate was never mangled further than this to begin
+    with.) Single-word values pass through unchanged -- "".join(x.split())
+    is a no-op when x has no internal whitespace.
     """
     yield token.value
 
-    entry = _load_teams().get(team_lookup_key(token.value))
-    if not entry:
-        return
-
-    nickname = entry.get("nickname")
-    if nickname:
-        yield nickname
-
-    founded = entry.get("founded")
-    if founded:
-        yield founded
-
-    for name in entry.get("notable", []):
-        yield name
+    for value in team_related_values(token):
+        yield "".join(value.split())
 
 
 _DISPATCH = {
