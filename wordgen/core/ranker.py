@@ -48,6 +48,40 @@ COMBO_BONUS = {
 }
 _DEFAULT_COMBO_BONUS = 0.5  # fallback if combo_kind is ever missing/unrecognized
 
+# Subtractive penalty applied to a *standalone* (is_combo=False) candidate's
+# score when it comes from a "personal-context" token type -- place, partner,
+# pet, custom (see _PENALIZED_STANDALONE_TYPES). Real repro case that forced
+# this: a token set of name=Michael, date=1995-03-15, pet=Buddy, two place
+# tokens (Liverpool, London), partner=Emily, custom=Sunshine produced a
+# medium-size ranked list whose top 10 was almost entirely bare
+# "<generic-word><common-suffix>" candidates -- "london1", "sunshine1",
+# "sunshin3", "emily1", "liverpool1" -- with only "Michael1995" and
+# "Buddy1995" (both real combos, built from the target's actual facts)
+# mixed in. These bare candidates aren't wrong to generate (a real password
+# could be exactly "london1"), but for a *targeted* tool the point of the
+# ranking is to put personalization first -- and pure population-frequency
+# case/suffix/leet scoring has no way to tell "london" (a bare place name
+# that happens to look like any other common word once suffixed) from a
+# word that's actually distinctive of the target, because by the time
+# scoring runs the string is just a string. The token type at generation
+# time is the only place that distinction still exists, so the penalty is
+# applied there via combiner.Candidate.token_type (see its docstring).
+#
+# name/date standalone candidates are deliberately NOT penalized (kept out
+# of _PENALIZED_STANDALONE_TYPES): a bare name or date is still direct,
+# first-order information about the target even with no other token
+# combined into it (unlike "sunshine", which is only in the wordlist at
+# all because the operator called it e.g. a "custom" fact) -- see CLAUDE.md.
+# pet IS penalized despite being combo-eligible (pet+date, pet+team):
+# this only ever fires on pet's *standalone* forms (is_combo=False checked
+# first in rank() below), never on a pet+date/pet+team combo, which still
+# gets COMBO_BONUS as before -- a bare "buddy1" has exactly the same
+# "generic word + common suffix, no personalization signal" problem as
+# "london1", it just happens to come from a token type that can *also*
+# combine.
+STANDALONE_PENALTY = 1.3
+_PENALIZED_STANDALONE_TYPES = {"place", "partner", "pet", "custom"}
+
 
 def _effective_combo_kind(value: str, combo_kind: str | None) -> str | None:
     """Reclassify a "team" combo as "date" when the candidate is itself
@@ -332,23 +366,33 @@ def _score(candidate: str, weights: dict, bounds: dict[str, tuple[float, float]]
     return case_norm + suffix_norm + leet_norm + sep_norm + plaus_norm
 
 
-def rank(candidates: Iterable[Union[Candidate, tuple[str, bool, Union[str, None]]]]) -> list[str]:
+def rank(
+    candidates: Iterable[Union[Candidate, tuple[str, bool, Union[str, None]]]]
+) -> list[str]:
     """Sort candidates by descending likelihood score.
 
-    Takes (value, is_combo, combo_kind) triples -- as yielded by
-    combiner.combine -- rather than bare strings, since neither "did this
-    come from a cross-token combo" nor "which token types produced it" is
+    Takes (value, is_combo, combo_kind[, token_type]) tuples -- as yielded
+    by combiner.combine -- rather than bare strings, since neither "did this
+    come from a cross-token combo" nor "which token type(s) produced it" is
     reliably re-derivable from the string itself; the combiner already knows
-    both at generation time.
+    both at generation time. token_type is read positionally (index 3) with
+    a None default so hand-authored 3-element tuples (e.g.
+    tests/ranking_eval_cases.py's combo cases, which have no standalone
+    penalty to exercise) keep working unchanged -- None never matches
+    _PENALIZED_STANDALONE_TYPES, so it's equivalent to "not penalized".
     """
     weights = _load_weights()
     bounds = _compute_bounds(weights)
     scored = []
-    for value, is_combo, combo_kind in candidates:
+    for entry in candidates:
+        value, is_combo, combo_kind = entry[0], entry[1], entry[2]
+        token_type = entry[3] if len(entry) > 3 else None
         score = _score(value, weights, bounds)
         if is_combo:
             effective_kind = _effective_combo_kind(value, combo_kind)
             score += COMBO_BONUS.get(effective_kind, _DEFAULT_COMBO_BONUS)
+        elif token_type in _PENALIZED_STANDALONE_TYPES:
+            score -= STANDALONE_PENALTY
         scored.append((value, score))
     scored.sort(key=lambda pair: pair[1], reverse=True)
     return [value for value, _ in scored]

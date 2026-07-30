@@ -100,7 +100,7 @@ def test_combo_bonus_lifts_personalized_combo_near_top_of_generic_single_tokens(
     # single-token wall -- confirms the bonus is doing real work here, not
     # just riding an already-favorable pattern score.
     monkeypatch_free_results = rank(
-        [(value, False, None) for value, _, _ in name_date_combo] + generic_single_tokens
+        [(value, False, None) for value, *_ in name_date_combo] + generic_single_tokens
     )
     assert monkeypatch_free_results.index("ahmet1999") > results.index("ahmet1999")
 

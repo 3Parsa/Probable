@@ -4,12 +4,18 @@ eyeballing `probable generate` output.
 
 Each case is (higher, lower, reason) where `higher` is expected to score
 *above* `lower` in wordgen.core.ranker.rank(). `higher`/`lower` are
-(value, is_combo, combo_kind) triples, matching the contract
+(value, is_combo, combo_kind[, token_type]) tuples, matching the contract
 wordgen.core.combiner.combine() yields (as Candidate) and
 wordgen.core.ranker.rank() consumes -- see CLAUDE.md's Ranker/Combiner notes
-for why is_combo/combo_kind are tagged at generation time rather than
-re-derived from the string. combo_kind is "date" or "team" when is_combo is
-True (mirroring the token-type pair that produced the combo), else None.
+for why is_combo/combo_kind/token_type are tagged at generation time rather
+than re-derived from the string. combo_kind is "date" or "team" when
+is_combo is True (mirroring the token-type pair that produced the combo),
+else None. token_type (4th element, optional -- omitted 3-tuples default to
+None via rank()) is the source token's type ("name", "place", "pet", ...),
+set only on standalone (is_combo=False) cases that specifically need to
+exercise ranker.py's STANDALONE_PENALTY -- older cases predating that
+penalty are left as plain 3-tuples rather than back-filled, since None is
+equivalent to "not penalized" and doesn't change their meaning.
 
 This file is deliberately NOT auto-fixed to 100% passing. It's the target for
 the next round of scoring work (see tests/test_ranker.py::
@@ -24,8 +30,8 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class RankingCase:
-    higher: tuple[str, bool, str | None]  # (value, is_combo, combo_kind) -- expected above `lower`
-    lower: tuple[str, bool, str | None]  # (value, is_combo, combo_kind) -- expected below `higher`
+    higher: tuple  # (value, is_combo, combo_kind[, token_type]) -- expected above `lower`
+    lower: tuple  # (value, is_combo, combo_kind[, token_type]) -- expected below `higher`
     reason: str
 
 
@@ -206,5 +212,40 @@ CASES: list[RankingCase] = [
         reason="PLAUSIBILITY CASE: mirrors the ahmet1999/qxzvb1999 case with a "
         "different name+year pair, to check the plausibility signal isn't an "
         "artifact of 'ahmet' specifically.",
+    ),
+    # --- Standalone-penalty cases (ranker.py's STANDALONE_PENALTY) -- real
+    # repro: a 7-token set (name=Michael, date=1995-03-15, pet=Buddy,
+    # place=Liverpool, place=London, partner=Emily, custom=Sunshine) at
+    # `medium` size put bare "london1"/"sunshine1"/"emily1"/"liverpool1" in
+    # the top 10, crowding out the only two real combos (Michael1995,
+    # Buddy1995) -- see CLAUDE.md and
+    # tests/test_engine.py::test_standalone_penalty_repro_case for the full
+    # end-to-end regression guard. These cases isolate the penalty itself.
+    RankingCase(
+        higher=("Michael1995", True, "date"),
+        lower=("london1", False, None, "place"),
+        reason="STANDALONE-PENALTY CASE: a real name+year combo (built from "
+        "the target's actual facts) should beat a bare place-token "
+        "standalone with a common suffix -- 'london1' has no personalization "
+        "signal at all, it's just a common word + the single most common "
+        "real-world suffix.",
+    ),
+    RankingCase(
+        higher=("michael1", False, None, "name"),
+        lower=("london1", False, None, "place"),
+        reason="STANDALONE-PENALTY CASE: isolates the penalty from the combo "
+        "bonus -- both sides are standalone (is_combo=False), same case "
+        "pattern and suffix shape, differing only in token_type. A bare name "
+        "token is still first-order information about the target even alone "
+        "(unpenalized); a bare place token is exactly the kind of generic "
+        "filler the penalty targets.",
+    ),
+    RankingCase(
+        higher=("Buddy1995", True, "date"),
+        lower=("sunshine1", False, None, "custom"),
+        reason="STANDALONE-PENALTY CASE: mirrors the Michael1995/london1 case "
+        "for a pet+date combo vs. a custom-token standalone -- also confirms "
+        "pet's combo forms are unaffected by the penalty (only pet's own "
+        "standalone forms are penalized), since Buddy1995 here is a combo.",
     ),
 ]

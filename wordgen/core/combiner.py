@@ -40,11 +40,24 @@ class Candidate(NamedTuple):
     combo built from a team's founding year (e.g. "ahmet1907") is still
     combo_kind="team", since the personalization signal (whether the target
     actually supports that team) is about the team fact, not the fact that
-    the related token happens to be numeric."""
+    the related token happens to be numeric.
+
+    token_type is the source token's type ("name", "date", "pet", "place",
+    "partner", "custom", "team"), set only for standalone candidates
+    (is_combo=False) -- combo candidates already carry their own
+    provenance signal via combo_kind, and mixing the two would be
+    ambiguous (a combo comes from a *pair* of token types, not one). The
+    ranker uses this to tell a bare standalone candidate that's still
+    directly about the target (a plain name or date, e.g. "michael",
+    "1995") from one that's generic filler riding common-word/suffix
+    statistics with no personalization signal at all (a bare place/
+    partner/pet/custom value, e.g. "london1", "sunshine1") -- see
+    ranker.py's STANDALONE_PENALTY."""
 
     value: str
     is_combo: bool
     combo_kind: str | None = None
+    token_type: str | None = None
 
 # Only these type pairs get crossed - arbitrary crossing explodes combinatorially
 # without adding realistic candidates.
@@ -127,7 +140,7 @@ def combine(tokens: list[Token]) -> Iterator[Candidate]:
         for candidate in expand(token):
             if candidate not in seen:
                 seen.add(candidate)
-                yield Candidate(candidate, is_combo=False)
+                yield Candidate(candidate, is_combo=False, token_type=token.type)
 
     for i, token_a in enumerate(tokens):
         for token_b in tokens[i + 1 :]:
