@@ -16,7 +16,7 @@ _TEAMS_PATH = Path(__file__).resolve().parent.parent / "data" / "teams.json"
 def team_lookup_key(name: str) -> str:
     """Canonical lookup key for a team name: lowercase, diacritics stripped,
     whitespace collapsed. teams.json's keys are built this same way by
-    scripts/fetch_teams.py's `_slug()` (team names fetched from TheSportsDB
+    scripts/fetch_teams.py's `_slug()` (team names fetched from Wikipedia
     routinely carry diacritics, e.g. "Beşiktaş", "Deportivo Alavés", which get
     ASCII-folded before being stored as the key). expand_team() below MUST use
     this same normalization when looking a token's value up -- a lookup that

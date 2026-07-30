@@ -123,6 +123,93 @@ def test_no_non_football_teams_in_teams_file():
     assert "celtic" in teams
 
 
+def test_premier_league_big_six_all_present():
+    # Regression test for a real data-completeness bug, originally against
+    # TheSportsDB: search_all_teams.php's free-tier bulk per-league fetch
+    # was capped at ~10 results per league, returned alphabetically --
+    # confirmed directly against the raw API (10/10 English Premier League
+    # results were "Arsenal" through "Fulham", none past F). For a ~20-team
+    # league, this silently truncated away every club sorting into the back
+    # half of the alphabet with no error at all -- Arsenal/Chelsea made it
+    # into teams.json while Liverpool, both Manchester clubs, and Tottenham
+    # -- some of the league's most recognizable, highest-personalization-
+    # value clubs -- were silently missing. A per-club patch fixed that one
+    # gap, but the cap itself was a hard free-tier limit with no workaround,
+    # which is why scripts/fetch_teams.py has since been rebuilt entirely on
+    # Wikipedia's complete, uncapped league-club-list pages instead (see
+    # CLAUDE.md). This remains the strongest sanity check for EPL
+    # completeness going forward regardless of data source -- if this ever
+    # regresses, some kind of silent truncation is back.
+    teams = _load_teams()
+    big_six = {
+        "arsenal",
+        "chelsea",
+        "liverpool",
+        "manchester united",
+        "manchester city",
+        "tottenham hotspur",
+    }
+    missing = big_six - set(teams)
+    assert not missing, f"Premier League 'big six' missing from teams.json: {missing}"
+
+
+# Full current-season (2026-27) rosters for the top 5 major leagues, each
+# individually captured from scripts/fetch_teams.py's own
+# find_club_roster()/_slug() against the live Wikipedia pages when this test
+# was written (not hand-typed guesses) and cross-checked against the real
+# league sizes in scripts/fetch_teams.py's EXPECTED_TEAM_COUNTS (20/20/18/
+# 20/18). Exact-set assertions, not just "at least N teams" -- the whole
+# point of these is to catch a *partial* roster (any kind of silent
+# truncation, alphabetical-cap or otherwise) the way the old TheSportsDB bug
+# would have kept passing a loose ">= N" check. Will need updating by hand
+# each time scripts/fetch_teams.py is re-run against a new season
+# (promotions/relegations change league membership every year).
+_FULL_LEAGUE_ROSTERS = {
+    "English Premier League": {
+        "arsenal", "aston villa", "bournemouth", "brentford",
+        "brighton & hove albion", "chelsea", "coventry city",
+        "crystal palace", "everton", "fulham", "hull city", "ipswich town",
+        "leeds united", "liverpool", "manchester city", "manchester united",
+        "newcastle united", "nottingham forest", "sunderland",
+        "tottenham hotspur",
+    },
+    "Spanish La Liga": {
+        "alaves", "athletic bilbao", "atletico madrid", "barcelona",
+        "celta vigo", "deportivo a coruna", "elche", "espanyol", "getafe",
+        "levante", "malaga", "osasuna", "racing santander",
+        "rayo vallecano", "real betis", "real madrid", "real sociedad",
+        "sevilla", "valencia", "villarreal",
+    },
+    "German Bundesliga": {
+        "1. fc koln", "bayer leverkusen", "bayern munich",
+        "borussia dortmund", "borussia monchengladbach",
+        "eintracht frankfurt", "fc augsburg", "hamburger sv", "mainz 05",
+        "rb leipzig", "sc freiburg", "sc paderborn", "schalke 04",
+        "sv elversberg", "tsg hoffenheim", "union berlin", "vfb stuttgart",
+        "werder bremen",
+    },
+    "Italian Serie A": {
+        "ac milan", "atalanta", "bologna", "cagliari", "como", "fiorentina",
+        "frosinone", "genoa", "inter milan", "juventus", "lazio", "lecce",
+        "monza", "napoli", "parma", "roma", "sassuolo", "torino", "udinese",
+        "venezia",
+    },
+    "French Ligue 1": {
+        "angers", "auxerre", "brest", "le havre", "le mans", "lens",
+        "lille", "lorient", "lyon", "marseille", "monaco", "nice",
+        "paris fc", "paris saint-germain", "rennes", "strasbourg",
+        "toulouse", "troyes",
+    },
+}
+
+
+def test_top_five_leagues_have_their_full_current_season_roster():
+    teams = _load_teams()
+    for league, roster in _FULL_LEAGUE_ROSTERS.items():
+        missing = roster - set(teams)
+        assert not missing, f"{league}: missing from teams.json: {sorted(missing)}"
+
+
 def test_api_only_teams_have_no_fabricated_notable_names():
     teams = _load_teams()
     new_team = _first_new_team(teams)
@@ -151,11 +238,12 @@ def test_diacritic_bearing_team_names_resolve_to_the_same_ascii_folded_key():
     # Regression test: teams.json's keys are ASCII-folded by
     # scripts/fetch_teams.py's _slug(), but expand_team() used to only
     # .lower() the input, so a team typed with its real, diacritic-bearing
-    # name (e.g. "Beşiktaş", "Deportivo Alavés") silently failed to match and
-    # fell back to raw passthrough with no nickname/founded expansion.
+    # name (e.g. "Beşiktaş", "Borussia Mönchengladbach") silently failed to
+    # match and fell back to raw passthrough with no nickname/founded
+    # expansion.
     teams = _load_teams()
     assert team_lookup_key("Beşiktaş") in teams
-    assert team_lookup_key("Deportivo Alavés") in teams
+    assert team_lookup_key("Borussia Mönchengladbach") in teams
 
     results = list(expand_team(Token(type="team", value="Beşiktaş")))
     assert results == ["Beşiktaş", "Kartal", "1903", "Necati"]

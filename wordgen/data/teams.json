@@ -1,47 +1,67 @@
 {
+  "1. fc koln": {
+    "founded": "1948",
+    "nickname": "Die Geißböcke",
+    "notable": []
+  },
+  "a.e. kifisia": {
+    "founded": "2012",
+    "nickname": "",
+    "notable": []
+  },
   "aberdeen": {
     "founded": "1903",
-    "nickname": "",
+    "nickname": "The Dons",
     "notable": []
   },
   "ac milan": {
     "founded": "1899",
-    "nickname": "MIL",
+    "nickname": "I Rossoneri",
     "notable": []
   },
   "academico de viseu": {
     "founded": "1914",
-    "nickname": "Académico de Viseu Futebol Clube",
+    "nickname": "Os Viriatos",
     "notable": []
   },
   "ado den haag": {
-    "founded": "1904",
+    "founded": "1905",
     "nickname": "Den Haag",
+    "notable": []
+  },
+  "aek athens": {
+    "founded": "1924",
+    "nickname": "Dikéfalos",
     "notable": []
   },
   "ajax": {
     "founded": "1900",
-    "nickname": "AJA",
+    "nickname": "de Godenzonen",
     "notable": []
   },
-  "akhmat grozny": {
+  "akhmat": {
     "founded": "1958",
     "nickname": "",
     "notable": []
   },
-  "akron tolyatti": {
+  "akron": {
     "founded": "2018",
     "nickname": "",
     "notable": []
   },
   "alanyaspor": {
     "founded": "1948",
-    "nickname": "Corendon Alanyaspor",
+    "nickname": "Şimşekler",
+    "notable": []
+  },
+  "alaves": {
+    "founded": "1921",
+    "nickname": "Babazorros",
     "notable": []
   },
   "aldosivi": {
     "founded": "1913",
-    "nickname": "",
+    "nickname": "Tiburón",
     "notable": []
   },
   "alverca": {
@@ -49,139 +69,134 @@
     "nickname": "",
     "notable": []
   },
-  "amed": {
-    "founded": "1990",
-    "nickname": "Amed Spor Kulubu",
+  "amedspor": {
+    "founded": "1972",
+    "nickname": "",
     "notable": []
   },
   "anderlecht": {
     "founded": "1908",
-    "nickname": "RSCA",
+    "nickname": "Purple & White, Sporting",
     "notable": []
   },
   "angers": {
     "founded": "1919",
-    "nickname": "Angers SCO",
+    "nickname": "Le SCO",
     "notable": []
   },
   "antwerp": {
     "founded": "1880",
-    "nickname": "ANT",
+    "nickname": "The Great Old, The Reds",
     "notable": []
   },
   "argentinos juniors": {
     "founded": "1904",
-    "nickname": "Argentinos Jrs.",
+    "nickname": "El Bicho",
     "notable": []
   },
   "aris": {
     "founded": "1914",
-    "nickname": "",
+    "nickname": "Theós tou Polémou",
     "notable": []
   },
   "arouca": {
     "founded": "1951",
-    "nickname": "Futebol Clube de Arouca",
+    "nickname": "Arouquenses, Lobos",
     "notable": []
   },
   "arsenal": {
-    "founded": "1892",
-    "nickname": "ARS",
+    "founded": "1886",
+    "nickname": "The Gunners",
     "notable": []
   },
   "asteras tripolis": {
     "founded": "1931",
-    "nickname": "Asteras Tripoli Football Club",
+    "nickname": "Kitrinoble",
     "notable": []
   },
   "aston villa": {
     "founded": "1874",
-    "nickname": "AVL",
+    "nickname": "The Villans",
     "notable": []
   },
   "atalanta": {
     "founded": "1907",
-    "nickname": "Orobici",
+    "nickname": "La Dea",
     "notable": []
   },
   "athletic bilbao": {
     "founded": "1898",
-    "nickname": "ATH",
+    "nickname": "Lehoiak",
     "notable": []
   },
   "athletico paranaense": {
     "founded": "1924",
-    "nickname": "CAP",
+    "nickname": "Furacão",
     "notable": []
   },
-  "atlanta united": {
+  "atlanta united fc": {
     "founded": "2014",
-    "nickname": "ATL",
+    "nickname": "The Five Stripes",
     "notable": []
   },
   "atletico madrid": {
     "founded": "1903",
-    "nickname": "ATM",
+    "nickname": "Rojiblancos",
     "notable": []
   },
   "atletico mineiro": {
     "founded": "1908",
-    "nickname": "CAM",
+    "nickname": "Galo",
     "notable": []
   },
   "atletico tucuman": {
     "founded": "1902",
-    "nickname": "Club Atlético Tucumán",
+    "nickname": "Decano",
     "notable": []
   },
   "atromitos": {
     "founded": "1923",
-    "nickname": "Atromitos Athens Football Club",
-    "notable": []
-  },
-  "augsburg": {
-    "founded": "1907",
-    "nickname": "Fußball-Club Augsburg 1907 e. V.",
+    "nickname": "Atrómitos",
     "notable": []
   },
   "austin fc": {
-    "founded": "2021",
-    "nickname": "ATX",
+    "founded": "",
+    "nickname": "The Verde and Black",
     "notable": []
   },
   "austria lustenau": {
     "founded": "1914",
-    "nickname": "Sportclub Austria Lustenau",
+    "nickname": "",
     "notable": []
   },
-  "austria vienna": {
+  "austria wien": {
     "founded": "1911",
-    "nickname": "Austria Wien",
+    "nickname": "Die Veilchen",
     "notable": []
   },
   "auxerre": {
     "founded": "1905",
-    "nickname": "AJ Auxerre",
+    "nickname": "Les Ajaïstes",
     "notable": []
   },
-  "az alkmaar": {
+  "az": {
     "founded": "1967",
-    "nickname": "Alkmaar Zaanstreek",
+    "nickname": "De Kaasboeren",
     "notable": []
   },
   "bahia": {
     "founded": "1931",
-    "nickname": "BAH",
+    "nickname": "Tricolor",
     "notable": []
   },
-  "baltika kaliningrad": {
+  "baltika": {
     "founded": "1954",
-    "nickname": "Football Club Baltika Kaliningrad",
+    "nickname": "Baltici",
     "notable": []
   },
   "banfield": {
     "founded": "1896",
-    "nickname": "",
+    "nickname": "El Taladro",
     "notable": []
   },
   "barcelona": {
@@ -194,32 +209,32 @@
   },
   "barracas central": {
     "founded": "1904",
-    "nickname": "Club Atlético Barracas Central",
+    "nickname": "Baraqueños",
     "notable": []
   },
-  "basel": {
-    "founded": "1893",
-    "nickname": "FC Basel",
+  "basaksehir": {
+    "founded": "1990",
+    "nickname": "Boz Baykuşlar",
     "notable": []
   },
   "bayer leverkusen": {
     "founded": "1904",
-    "nickname": "B04",
+    "nickname": "Die Werkself",
     "notable": []
   },
   "bayern munich": {
     "founded": "1900",
-    "nickname": "BAY",
+    "nickname": "Die Bayern",
     "notable": []
   },
   "belgrano": {
     "founded": "1905",
-    "nickname": "Belgrano Cordoba",
+    "nickname": "El Pirata",
     "notable": []
   },
   "benfica": {
     "founded": "1904",
-    "nickname": "SLB",
+    "nickname": "",
     "notable": []
   },
   "besiktas": {
@@ -231,302 +246,352 @@
   },
   "beveren": {
     "founded": "1936",
-    "nickname": "Sportkring Beveren",
+    "nickname": "",
     "notable": []
   },
   "boca juniors": {
     "founded": "1905",
-    "nickname": "Boca",
+    "nickname": "Xeneize",
     "notable": []
   },
   "bologna": {
     "founded": "1909",
-    "nickname": "Bologna FC",
+    "nickname": "I Rossoblù",
     "notable": []
   },
   "borussia dortmund": {
     "founded": "1909",
-    "nickname": "DOR",
+    "nickname": "Die Borussen",
     "notable": []
   },
   "borussia monchengladbach": {
     "founded": "1900",
-    "nickname": "Mönchengladbach",
+    "nickname": "Die Fohlen",
     "notable": []
   },
   "botafogo": {
     "founded": "1894",
-    "nickname": "BOT",
+    "nickname": "Fogo",
     "notable": []
   },
   "bournemouth": {
-    "founded": "1890",
-    "nickname": "BOU",
+    "founded": "1899",
+    "nickname": "The Cherries",
     "notable": []
   },
   "braga": {
     "founded": "1921",
-    "nickname": "BRA",
-    "notable": []
-  },
-  "bragantino": {
-    "founded": "2019",
-    "nickname": "RBB",
+    "nickname": "Os Arcebispos",
     "notable": []
   },
   "brentford": {
     "founded": "1889",
-    "nickname": "BRE",
+    "nickname": "The Bees",
     "notable": []
   },
   "brest": {
     "founded": "1903",
-    "nickname": "BRS",
+    "nickname": "Les Pirates",
     "notable": []
   },
-  "brighton and hove albion": {
+  "brighton & hove albion": {
     "founded": "1901",
-    "nickname": "BRI",
+    "nickname": "The Seagulls",
+    "notable": []
+  },
+  "bsc young boys": {
+    "founded": "1898",
+    "nickname": "",
     "notable": []
   },
   "cagliari": {
     "founded": "1920",
-    "nickname": "Cagliari Calcio",
+    "nickname": "Gli Isolani",
     "notable": []
   },
   "cambuur": {
     "founded": "1964",
-    "nickname": "SC Cambuur-Leeuwarden",
+    "nickname": "The Yellow-Blues",
     "notable": []
   },
   "casa pia": {
-    "founded": "1920",
-    "nickname": "Casa Pia Atlético Clube",
+    "founded": "",
+    "nickname": "Os Gansos",
     "notable": []
   },
   "celta vigo": {
     "founded": "1923",
-    "nickname": "VIG",
+    "nickname": "Os Celestes",
     "notable": []
   },
   "celtic": {
-    "founded": "1888",
-    "nickname": "CEL",
+    "founded": "1887",
+    "nickname": "The Bhoys",
     "notable": []
   },
-  "central cordoba de santiago del estero": {
+  "central cordoba (sde)": {
     "founded": "1919",
-    "nickname": "Central Córdoba",
+    "nickname": "El Ferroviario",
     "notable": []
   },
   "cercle brugge": {
     "founded": "1899",
-    "nickname": "Cercle Brugge Koninklijke Sportvereniging",
+    "nickname": "Groen en Zwart",
     "notable": []
   },
   "cf montreal": {
-    "founded": "2010",
-    "nickname": "MTL",
+    "founded": "1992",
+    "nickname": "Le CFM (The CFM), L'Impact",
     "notable": []
   },
   "chapecoense": {
     "founded": "1973",
-    "nickname": "CHA",
+    "nickname": "Verdão",
     "notable": []
   },
   "charleroi": {
     "founded": "1904",
-    "nickname": "",
+    "nickname": "Les Zèbres (The Zebras)",
     "notable": []
   },
   "charlotte fc": {
-    "founded": "2022",
-    "nickname": "CLT",
+    "founded": "2019",
+    "nickname": "The Crown",
     "notable": []
   },
   "chelsea": {
     "founded": "1905",
-    "nickname": "CHE",
+    "nickname": "The Blues",
     "notable": []
   },
-  "chicago fire": {
+  "chicago fire fc": {
     "founded": "1997",
-    "nickname": "CHI",
+    "nickname": "The Fire",
     "notable": []
   },
   "club brugge": {
     "founded": "1891",
-    "nickname": "BRU",
+    "nickname": "(Blue-Black), (the) Club, FCB, FC Bruges",
     "notable": []
   },
   "colorado rapids": {
-    "founded": "1996",
-    "nickname": "COL",
+    "founded": "1995",
+    "nickname": "Pids",
     "notable": []
   },
   "columbus crew": {
     "founded": "1994",
-    "nickname": "CLB",
+    "nickname": "The Crew",
     "notable": []
   },
   "como": {
     "founded": "1907",
-    "nickname": "COM",
+    "nickname": "I Lariani",
     "notable": []
   },
   "corinthians": {
     "founded": "1910",
-    "nickname": "COR",
+    "nickname": "Timão",
     "notable": []
   },
   "coritiba": {
     "founded": "1909",
-    "nickname": "CFC",
+    "nickname": "Coxa",
     "notable": []
   },
   "corum": {
     "founded": "1997",
-    "nickname": "Çorum Futbol Kulübü",
+    "nickname": "Kırmızı Şimşekler",
     "notable": []
   },
   "coventry city": {
     "founded": "1883",
-    "nickname": "CVC",
+    "nickname": "The Sky Blues",
     "notable": []
   },
   "cruzeiro": {
     "founded": "1921",
-    "nickname": "CRU",
+    "nickname": "Raposa",
     "notable": []
   },
   "crystal palace": {
     "founded": "1905",
-    "nickname": "CRY",
+    "nickname": "The Eagles",
     "notable": []
   },
-  "cska moscow": {
+  "cska": {
     "founded": "1911",
-    "nickname": "",
+    "nickname": "Koni",
     "notable": []
   },
-  "dc united": {
-    "founded": "1995",
-    "nickname": "DC",
+  "d.c. united": {
+    "founded": "1994",
+    "nickname": "Black-and-Red",
     "notable": []
   },
   "defensa y justicia": {
     "founded": "1935",
-    "nickname": "Club Social y Deportivo Defensa y Justicia",
+    "nickname": "El Halcón",
     "notable": []
   },
-  "deportivo alaves": {
-    "founded": "1921",
-    "nickname": "ALA",
-    "notable": []
-  },
-  "deportivo de a coruna": {
+  "deportivo a coruna": {
     "founded": "1906",
-    "nickname": "Real Club Deportivo de A Coruña",
+    "nickname": "Os Brancoazuis",
     "notable": []
   },
   "deportivo riestra": {
     "founded": "1931",
-    "nickname": "Deportivo Riestra Asociación de Fomento Barrio Colón",
+    "nickname": "Blanquinegro",
     "notable": []
   },
   "dundee": {
     "founded": "1893",
-    "nickname": "Dundee FC",
+    "nickname": "The Dee",
     "notable": []
   },
   "dundee united": {
     "founded": "1909",
-    "nickname": "Dundee Utd",
+    "nickname": "The Terrors",
     "notable": []
   },
   "dynamo makhachkala": {
-    "founded": "1991",
-    "nickname": "Dynamo Makhachkala",
+    "founded": "1927",
+    "nickname": "",
     "notable": []
   },
   "dynamo moscow": {
     "founded": "1923",
-    "nickname": "FC Dynamo Moscow",
+    "nickname": "Belo-golubye",
     "notable": []
   },
   "eintracht frankfurt": {
     "founded": "1899",
-    "nickname": "SGE",
+    "nickname": "",
     "notable": []
   },
   "elche": {
     "founded": "1923",
-    "nickname": "Elche CF",
-    "notable": []
-  },
-  "elversberg": {
-    "founded": "1907",
-    "nickname": "SpVgg 07 Elversberg",
+    "nickname": "Los Franjiverdes / Els frangiverds",
     "notable": []
   },
   "erzurumspor": {
     "founded": "2005",
-    "nickname": "Büyükşehir Belediye Erzurumspor",
+    "nickname": "",
     "notable": []
   },
   "espanyol": {
     "founded": "1900",
-    "nickname": "Espanol",
+    "nickname": "Periquitos (Parakeets) Blanc-i-blaus",
     "notable": []
   },
   "estoril praia": {
     "founded": "1939",
-    "nickname": "Grupo Desportivo Estoril Praia",
+    "nickname": "Canarinhos",
     "notable": []
   },
-  "estrela amadora": {
-    "founded": "1932",
-    "nickname": "Clube de Futebol Estrela da Amadora",
+  "estrela da amadora": {
+    "founded": "2020",
+    "nickname": "Tricolores",
+    "notable": []
+  },
+  "estudiantes (lp)": {
+    "founded": "1905",
+    "nickname": "Los Pincharratas (The Rat Stabbers)",
+    "notable": []
+  },
+  "estudiantes (rc)": {
+    "founded": "1912",
+    "nickname": "Celeste",
     "notable": []
   },
   "everton": {
     "founded": "1878",
-    "nickname": "EVE",
+    "nickname": "The Blues",
     "notable": []
   },
   "excelsior": {
     "founded": "1902",
-    "nickname": "",
+    "nickname": "The Kralingers",
     "notable": []
   },
   "eyupspor": {
     "founded": "1919",
-    "nickname": "Eyüp Spor Kulübü",
+    "nickname": "",
     "notable": []
   },
-  "fakel voronezh": {
+  "fakel": {
     "founded": "1947",
-    "nickname": "",
+    "nickname": "Fakelony",
     "notable": []
   },
   "falkirk": {
     "founded": "1876",
-    "nickname": "",
+    "nickname": "The Bairns",
     "notable": []
   },
   "famalicao": {
     "founded": "1931",
-    "nickname": "",
+    "nickname": "Famalicenses",
+    "notable": []
+  },
+  "fc augsburg": {
+    "founded": "1907",
+    "nickname": "Fuggerstädter",
+    "notable": []
+  },
+  "fc basel": {
+    "founded": "1893",
+    "nickname": "FCB, Bebbi (Citizen of Basel), RotBlau",
     "notable": []
   },
   "fc cincinnati": {
-    "founded": "2019",
-    "nickname": "CIN",
+    "founded": "2015",
+    "nickname": "The Orange and Blue",
     "notable": []
   },
   "fc dallas": {
-    "founded": "1996",
-    "nickname": "DAL",
+    "founded": "1995",
+    "nickname": "Los Toros",
+    "notable": []
+  },
+  "fc lausanne-sport": {
+    "founded": "1896",
+    "nickname": "Les bleu et blanc",
+    "notable": []
+  },
+  "fc lugano": {
+    "founded": "",
+    "nickname": "Bianconeri",
+    "notable": []
+  },
+  "fc luzern": {
+    "founded": "1901",
+    "nickname": "Die Leuchten",
+    "notable": []
+  },
+  "fc sion": {
+    "founded": "1909",
+    "nickname": "",
+    "notable": []
+  },
+  "fc st. gallen": {
+    "founded": "1879",
+    "nickname": "Espen",
+    "notable": []
+  },
+  "fc thun": {
+    "founded": "1898",
+    "nickname": "",
+    "notable": []
+  },
+  "fc vaduz": {
+    "founded": "",
+    "nickname": "",
+    "notable": []
+  },
+  "fc zurich": {
+    "founded": "1896",
+    "nickname": "",
     "notable": []
   },
   "fenerbahce": {
@@ -539,37 +604,37 @@
   },
   "feyenoord": {
     "founded": "1908",
-    "nickname": "FEY",
+    "nickname": "De club aan de Maas",
     "notable": []
   },
   "fiorentina": {
-    "founded": "1926",
-    "nickname": "",
+    "founded": "",
+    "nickname": "I Viola",
     "notable": []
   },
   "flamengo": {
     "founded": "1895",
-    "nickname": "FLA",
+    "nickname": "Rubro-Negro",
+    "notable": []
+  },
+  "fluminense": {
+    "founded": "1902",
+    "nickname": "Tricolor",
     "notable": []
   },
   "fortuna sittard": {
     "founded": "1968",
-    "nickname": "Sittard",
-    "notable": []
-  },
-  "freiburg": {
-    "founded": "1904",
-    "nickname": "Sport-Club Freiburg",
+    "nickname": "",
     "notable": []
   },
   "frosinone": {
-    "founded": "1912",
-    "nickname": "",
+    "founded": "1906",
+    "nickname": "I Canarini",
     "notable": []
   },
   "fulham": {
     "founded": "1879",
-    "nickname": "FUL",
+    "nickname": "The Cottagers",
     "notable": []
   },
   "galatasaray": {
@@ -582,137 +647,247 @@
   },
   "gaziantep": {
     "founded": "1988",
-    "nickname": "Gaziantep Futbol Kulübü",
+    "nickname": "Şahinler",
     "notable": []
   },
   "genclerbirligi": {
     "founded": "1923",
-    "nickname": "Gençlerbirliği Spor Kulübü",
+    "nickname": "Gençler",
     "notable": []
   },
   "genk": {
-    "founded": "1923",
-    "nickname": "GEN",
+    "founded": "1988",
+    "nickname": "Blauw-Wit (Blue-White), Racing, KRC, De Smurfen",
     "notable": []
   },
   "genoa": {
-    "founded": "1823",
-    "nickname": "Genoa Cricket and Football Club",
+    "founded": "",
+    "nickname": "Il Grifone",
     "notable": []
   },
   "gent": {
-    "founded": "1900",
-    "nickname": "KAA Gent",
+    "founded": "1864",
+    "nickname": "(The Buffalos) Gantoise",
     "notable": []
   },
   "getafe": {
-    "founded": "1946",
-    "nickname": "GET",
+    "founded": "1983",
+    "nickname": "Geta",
     "notable": []
   },
   "gil vicente": {
-    "founded": "1924",
-    "nickname": "Gil Vicente Futebol Clube",
+    "founded": "",
+    "nickname": "Gilistas",
+    "notable": []
+  },
+  "gimnasia y esgrima (lp)": {
+    "founded": "1887",
+    "nickname": "El Lobo",
+    "notable": []
+  },
+  "gimnasia y esgrima (m)": {
+    "founded": "1908",
+    "nickname": "Lobo mendocino",
     "notable": []
   },
   "go ahead eagles": {
     "founded": "1902",
-    "nickname": "Go Ahead Eagles Deventer",
+    "nickname": "The Pride of the IJssel",
     "notable": []
   },
-  "grasshoppers": {
+  "goztepe": {
+    "founded": "1925",
+    "nickname": "Göz Göz",
+    "notable": []
+  },
+  "grasshopper club": {
     "founded": "1886",
-    "nickname": "Grasshopper Club Zürich",
+    "nickname": "Hoppers",
     "notable": []
   },
   "grazer ak": {
     "founded": "1902",
-    "nickname": "Grazer Athletiksport Klub",
+    "nickname": "Die Roten",
+    "notable": []
+  },
+  "gremio": {
+    "founded": "1903",
+    "nickname": "Imortal Tricolor",
     "notable": []
   },
   "groningen": {
     "founded": "1971",
-    "nickname": "Football Club Groningen",
+    "nickname": "Trots van het Noorden",
     "notable": []
   },
-  "hamburg": {
+  "hamburger sv": {
     "founded": "1887",
-    "nickname": "Hamburger SV",
+    "nickname": "Die Rothosen",
     "notable": []
   },
   "heart of midlothian": {
     "founded": "1874",
-    "nickname": "Heart of Midlothian Football Club",
+    "nickname": "The Jam Tarts",
     "notable": []
   },
   "heerenveen": {
     "founded": "1920",
-    "nickname": "Sportclub Heerenveen",
+    "nickname": "De Superfriezen",
     "notable": []
   },
   "hibernian": {
     "founded": "1875",
-    "nickname": "Hibs",
+    "nickname": "The Hibees",
     "notable": []
   },
-  "hoffenheim": {
-    "founded": "1899",
-    "nickname": "TSG 1899 Hoffenheim",
+  "houston dynamo fc": {
+    "founded": "2005",
+    "nickname": "Orange Crush",
+    "notable": []
+  },
+  "hull city": {
+    "founded": "1904",
+    "nickname": "The Tigers",
+    "notable": []
+  },
+  "huracan": {
+    "founded": "1908",
+    "nickname": "Globo",
+    "notable": []
+  },
+  "independiente": {
+    "founded": "1905",
+    "nickname": "El Rojo",
+    "notable": []
+  },
+  "independiente rivadavia": {
+    "founded": "1913",
+    "nickname": "Azul",
+    "notable": []
+  },
+  "instituto": {
+    "founded": "1918",
+    "nickname": "La Gloria",
+    "notable": []
+  },
+  "inter miami cf": {
+    "founded": "2018",
+    "nickname": "The Herons",
     "notable": []
   },
   "inter milan": {
     "founded": "1908",
-    "nickname": "INT",
+    "nickname": "I Nerazzurri",
+    "notable": []
+  },
+  "internacional": {
+    "founded": "1909",
+    "nickname": "Inter",
+    "notable": []
+  },
+  "ipswich town": {
+    "founded": "",
+    "nickname": "The Blues",
+    "notable": []
+  },
+  "iraklis": {
+    "founded": "1908",
+    "nickname": "",
     "notable": []
   },
   "juventus": {
     "founded": "1897",
-    "nickname": "JUV",
+    "nickname": "",
+    "notable": []
+  },
+  "kalamata": {
+    "founded": "1967",
+    "nickname": "",
+    "notable": []
+  },
+  "kasmpasa": {
+    "founded": "1921",
+    "nickname": "Apaçiler",
     "notable": []
   },
   "kilmarnock": {
     "founded": "1869",
-    "nickname": "",
+    "nickname": "Killie",
+    "notable": []
+  },
+  "kocaelispor": {
+    "founded": "1966",
+    "nickname": "Körfez",
+    "notable": []
+  },
+  "konyaspor": {
+    "founded": "1922",
+    "nickname": "Anadolu Kartalı",
     "notable": []
   },
   "kortrijk": {
     "founded": "1901",
-    "nickname": "Koninklijke Voetbalclub Kortrijk",
+    "nickname": "De Kerels",
     "notable": []
   },
   "krasnodar": {
     "founded": "2008",
+    "nickname": "Byki",
+    "notable": []
+  },
+  "krylia sovetov": {
+    "founded": "1942",
+    "nickname": "Krylia",
+    "notable": []
+  },
+  "la galaxy": {
+    "founded": "1994",
+    "nickname": "Galaxy",
+    "notable": []
+  },
+  "la louviere": {
+    "founded": "1919",
     "nickname": "",
     "notable": []
   },
-  "krylia sovetov samara": {
-    "founded": "1942",
-    "nickname": "PFC Krylia Sovetov Samara",
+  "lanus": {
+    "founded": "1915",
+    "nickname": "Granate",
     "notable": []
   },
   "lask": {
-    "founded": "1908",
-    "nickname": "Linzer Athletik-Sport-Klub",
+    "founded": "1899",
+    "nickname": "Die Schwarz-Weißen",
     "notable": []
   },
-  "lausanne-sport": {
-    "founded": "1896",
-    "nickname": "Football Club Lausanne-Sport",
+  "lazio": {
+    "founded": "1900",
+    "nickname": "I Biancocelesti",
     "notable": []
   },
   "le havre": {
-    "founded": "1872",
-    "nickname": "HAC",
+    "founded": "1884",
+    "nickname": "Le Club Doyen",
     "notable": []
   },
   "le mans": {
     "founded": "1985",
-    "nickname": "Le Mans Football Club",
+    "nickname": "MUC 72",
+    "notable": []
+  },
+  "lecce": {
+    "founded": "",
+    "nickname": "I Giallorossi",
+    "notable": []
+  },
+  "leeds united": {
+    "founded": "",
+    "nickname": "The Whites",
     "notable": []
   },
   "lens": {
     "founded": "1906",
-    "nickname": "LNS",
+    "nickname": "Les Sang et Or",
     "notable": []
   },
   "levadiakos": {
@@ -722,57 +897,202 @@
   },
   "levante": {
     "founded": "1909",
-    "nickname": "Levante UD",
+    "nickname": "Granotes",
     "notable": []
   },
   "lille": {
     "founded": "1944",
-    "nickname": "LIL",
+    "nickname": "Les Dogues",
     "notable": []
   },
-  "lokomotiv moscow": {
+  "liverpool": {
+    "founded": "1892",
+    "nickname": "The Reds",
+    "notable": []
+  },
+  "lokomotiv": {
     "founded": "1922",
-    "nickname": "Lok. Moscow",
+    "nickname": "Loko",
     "notable": []
   },
-  "lommel": {
-    "founded": "2003",
-    "nickname": "Lommel SK",
+  "lommel sk": {
+    "founded": "1932",
+    "nickname": "",
     "notable": []
   },
   "lorient": {
     "founded": "1926",
-    "nickname": "LOR",
+    "nickname": "Les Merlus",
     "notable": []
   },
-  "lugano": {
-    "founded": "1908",
-    "nickname": "Football Club Lugano",
-    "notable": []
-  },
-  "luzern": {
-    "founded": "1901",
-    "nickname": "FC Luzern",
+  "los angeles fc": {
+    "founded": "",
+    "nickname": "The Black and Gold",
     "notable": []
   },
   "lyon": {
-    "founded": "1950",
-    "nickname": "LYO",
+    "founded": "",
+    "nickname": "Les Gones",
+    "notable": []
+  },
+  "mainz 05": {
+    "founded": "1905",
+    "nickname": "Die Nullfünfer (the 05ers)",
+    "notable": []
+  },
+  "malaga": {
+    "founded": "1948",
+    "nickname": "Los Albicelestes",
+    "notable": []
+  },
+  "manchester city": {
+    "founded": "1880",
+    "nickname": "The Citizens",
+    "notable": []
+  },
+  "manchester united": {
+    "founded": "1878",
+    "nickname": "The Red Devils",
+    "notable": []
+  },
+  "maritimo": {
+    "founded": "1910",
+    "nickname": "Maritimistas",
     "notable": []
   },
   "marseille": {
     "founded": "1899",
-    "nickname": "OLM",
+    "nickname": "Les Phocéens",
+    "notable": []
+  },
+  "mechelen": {
+    "founded": "1904",
+    "nickname": "De Kakkers, Malinois, Malinwa, Geel-rood",
+    "notable": []
+  },
+  "minnesota united fc": {
+    "founded": "2015",
+    "nickname": "The Loons, The Black and Blue",
+    "notable": []
+  },
+  "mirassol": {
+    "founded": "1925",
+    "nickname": "Leão da Alta Araraquarense",
+    "notable": []
+  },
+  "monaco": {
+    "founded": "1924",
+    "nickname": "Les Rouge et Blanc",
+    "notable": []
+  },
+  "monza": {
+    "founded": "",
+    "nickname": "",
+    "notable": []
+  },
+  "moreirense": {
+    "founded": "1938",
+    "nickname": "Os verdes e brancos",
     "notable": []
   },
   "motherwell": {
     "founded": "1886",
+    "nickname": "The Well",
+    "notable": []
+  },
+  "n.e.c.": {
+    "founded": "1900",
+    "nickname": "",
+    "notable": []
+  },
+  "nacional": {
+    "founded": "",
+    "nickname": "Alvinegros",
+    "notable": []
+  },
+  "napoli": {
+    "founded": "",
+    "nickname": "",
+    "notable": []
+  },
+  "nashville sc": {
+    "founded": "2016",
+    "nickname": "Coyotes",
+    "notable": []
+  },
+  "new england revolution": {
+    "founded": "1995",
+    "nickname": "The Revs",
+    "notable": []
+  },
+  "new york city fc": {
+    "founded": "2013",
+    "nickname": "The Pigeons",
+    "notable": []
+  },
+  "new york red bulls": {
+    "founded": "1994",
+    "nickname": "The Red Bulls",
+    "notable": []
+  },
+  "newcastle united": {
+    "founded": "1881",
+    "nickname": "The Magpies",
+    "notable": []
+  },
+  "newell's old boys": {
+    "founded": "1903",
+    "nickname": "La Lepra",
+    "notable": []
+  },
+  "nice": {
+    "founded": "",
+    "nickname": "Les Aiglons",
+    "notable": []
+  },
+  "nottingham forest": {
+    "founded": "1865",
+    "nickname": "Forest",
+    "notable": []
+  },
+  "ofi": {
+    "founded": "",
+    "nickname": "O Ómilos",
+    "notable": []
+  },
+  "oh leuven": {
+    "founded": "2002",
     "nickname": "",
     "notable": []
   },
   "olympiacos": {
     "founded": "1925",
-    "nickname": "Olympiacos Football Club",
+    "nickname": "Thrylos",
+    "notable": []
+  },
+  "orenburg": {
+    "founded": "1976",
+    "nickname": "",
+    "notable": []
+  },
+  "orlando city sc": {
+    "founded": "2010",
+    "nickname": "The Lions",
+    "notable": []
+  },
+  "osasuna": {
+    "founded": "",
+    "nickname": "Gorritxoak",
+    "notable": []
+  },
+  "palmeiras": {
+    "founded": "1914",
+    "nickname": "",
+    "notable": []
+  },
+  "panathinaikos": {
+    "founded": "1908",
+    "nickname": "Trifýlli",
     "notable": []
   },
   "panetolikos": {
@@ -785,14 +1105,79 @@
     "nickname": "",
     "notable": []
   },
-  "rangers": {
-    "founded": "1872",
-    "nickname": "RFC",
+  "paris fc": {
+    "founded": "1969",
+    "nickname": "Les Parisiens",
     "notable": []
   },
-  "rapid vienna": {
-    "founded": "1899",
-    "nickname": "Sportklub Rapid Wien",
+  "paris saint-germain": {
+    "founded": "1970",
+    "nickname": "Les Parisiens",
+    "notable": []
+  },
+  "parma": {
+    "founded": "1970",
+    "nickname": "I Crociati",
+    "notable": []
+  },
+  "pec zwolle": {
+    "founded": "1910",
+    "nickname": "Blauwvingers",
+    "notable": []
+  },
+  "philadelphia union": {
+    "founded": "2008",
+    "nickname": "The Union",
+    "notable": []
+  },
+  "platense": {
+    "founded": "1905",
+    "nickname": "Calamares",
+    "notable": []
+  },
+  "portland timbers": {
+    "founded": "2009",
+    "nickname": "PTFC",
+    "notable": []
+  },
+  "porto": {
+    "founded": "1906",
+    "nickname": "Dragões",
+    "notable": []
+  },
+  "psv": {
+    "founded": "1913",
+    "nickname": "Boeren",
+    "notable": []
+  },
+  "racing": {
+    "founded": "1903",
+    "nickname": "La Academia",
+    "notable": []
+  },
+  "racing santander": {
+    "founded": "1913",
+    "nickname": "",
+    "notable": []
+  },
+  "rangers": {
+    "founded": "1872",
+    "nickname": "The Gers",
+    "notable": []
+  },
+  "rayo vallecano": {
+    "founded": "1924",
+    "nickname": "Los Franjirrojos",
+    "notable": []
+  },
+  "rb leipzig": {
+    "founded": "2009",
+    "nickname": "",
+    "notable": []
+  },
+  "real betis": {
+    "founded": "1907",
+    "nickname": "Heliopolitanos",
     "notable": []
   },
   "real madrid": {
@@ -803,59 +1188,399 @@
       "Zidane"
     ]
   },
+  "real salt lake": {
+    "founded": "2004",
+    "nickname": "Claret and Cobalt",
+    "notable": []
+  },
+  "real sociedad": {
+    "founded": "",
+    "nickname": "Txuri-Urdin",
+    "notable": []
+  },
+  "red bull bragantino": {
+    "founded": "1928",
+    "nickname": "Massa Bruta",
+    "notable": []
+  },
   "red bull salzburg": {
     "founded": "1933",
-    "nickname": "RBS",
+    "nickname": "Die Roten Bullen",
     "notable": []
   },
-  "scr altach": {
+  "remo": {
+    "founded": "1905",
+    "nickname": "Leão Azul",
+    "notable": []
+  },
+  "rennes": {
+    "founded": "1901",
+    "nickname": "Les Rennais",
+    "notable": []
+  },
+  "rheindorf altach": {
     "founded": "1929",
-    "nickname": "SC Rheindorf Altach",
+    "nickname": "",
     "notable": []
   },
-  "servette": {
+  "rio ave": {
+    "founded": "",
+    "nickname": "Vilacondenses",
+    "notable": []
+  },
+  "river plate": {
+    "founded": "1901",
+    "nickname": "Los Millonarios",
+    "notable": []
+  },
+  "rizespor": {
+    "founded": "1953",
+    "nickname": "",
+    "notable": []
+  },
+  "rodina": {
+    "founded": "2015",
+    "nickname": "The Birds",
+    "notable": []
+  },
+  "roma": {
+    "founded": "1927",
+    "nickname": "I Giallorossi",
+    "notable": []
+  },
+  "rosario central": {
+    "founded": "1889",
+    "nickname": "Canalla",
+    "notable": []
+  },
+  "rostov": {
+    "founded": "1930",
+    "nickname": "Selmashi",
+    "notable": []
+  },
+  "rubin": {
+    "founded": "1958",
+    "nickname": "Rubinovye",
+    "notable": []
+  },
+  "samsunspor": {
+    "founded": "1965",
+    "nickname": "Kırmızı Şimşekler",
+    "notable": []
+  },
+  "san diego fc": {
+    "founded": "2023",
+    "nickname": "",
+    "notable": []
+  },
+  "san jose earthquakes": {
+    "founded": "1994",
+    "nickname": "The Quakes",
+    "notable": []
+  },
+  "san lorenzo": {
+    "founded": "1908",
+    "nickname": "Los Santos",
+    "notable": []
+  },
+  "santa clara": {
+    "founded": "1921",
+    "nickname": "Os Açorianos",
+    "notable": []
+  },
+  "santos": {
+    "founded": "1912",
+    "nickname": "Peixe",
+    "notable": []
+  },
+  "sao paulo": {
+    "founded": "1930",
+    "nickname": "Tricolor Paulista",
+    "notable": []
+  },
+  "sarmiento (j)": {
+    "founded": "1911",
+    "nickname": "Verde",
+    "notable": []
+  },
+  "sassuolo": {
+    "founded": "1920",
+    "nickname": "I Neroverdi",
+    "notable": []
+  },
+  "sc freiburg": {
+    "founded": "1904",
+    "nickname": "Breisgau-Brasilianer",
+    "notable": []
+  },
+  "sc paderborn": {
+    "founded": "1907",
+    "nickname": "",
+    "notable": []
+  },
+  "schalke 04": {
+    "founded": "1904",
+    "nickname": "Die Königsblauen",
+    "notable": []
+  },
+  "seattle sounders fc": {
+    "founded": "2007",
+    "nickname": "The Sounders",
+    "notable": []
+  },
+  "servette fc": {
+    "founded": "1900",
+    "nickname": "Les Grenats",
+    "notable": []
+  },
+  "sevilla": {
     "founded": "1890",
-    "nickname": "SER",
+    "nickname": "Los Nervionenses",
     "notable": []
   },
-  "sion": {
-    "founded": "1909",
-    "nickname": "Football Club de Sion",
+  "sint-truiden": {
+    "founded": "1924",
+    "nickname": "De Kanaries",
     "notable": []
   },
-  "st. gallen": {
-    "founded": "1879",
-    "nickname": "FC St. Gallen 1879",
+  "sk rapid": {
+    "founded": "1899",
+    "nickname": "Die Grün-Weißen",
+    "notable": []
+  },
+  "sparta rotterdam": {
+    "founded": "1888",
+    "nickname": "De Kasteelheren",
+    "notable": []
+  },
+  "spartak": {
+    "founded": "1922",
+    "nickname": "Gladiatory",
+    "notable": []
+  },
+  "sporting cp": {
+    "founded": "1906",
+    "nickname": "Leões",
+    "notable": []
+  },
+  "sporting kansas city": {
+    "founded": "1995",
+    "nickname": "Wizards",
+    "notable": []
+  },
+  "st johnstone": {
+    "founded": "1884",
+    "nickname": "The Saints",
+    "notable": []
+  },
+  "st mirren": {
+    "founded": "1877",
+    "nickname": "The Buddies",
+    "notable": []
+  },
+  "st. louis city sc": {
+    "founded": "2019",
+    "nickname": "",
+    "notable": []
+  },
+  "standard liege": {
+    "founded": "1898",
+    "nickname": "Les Rouches",
+    "notable": []
+  },
+  "strasbourg": {
+    "founded": "1906",
+    "nickname": "Le Racing",
     "notable": []
   },
   "sturm graz": {
-    "founded": "1909",
-    "nickname": "Sportklub Puntigamer Sturm Graz",
+    "founded": "",
+    "nickname": "Die Schwoazn",
+    "notable": []
+  },
+  "sunderland": {
+    "founded": "1879",
+    "nickname": "The Black Cats",
+    "notable": []
+  },
+  "sv elversberg": {
+    "founded": "1907",
+    "nickname": "Schwarz und Weiß",
     "notable": []
   },
   "sv ried": {
     "founded": "1912",
-    "nickname": "SV Guntamatic Ried",
+    "nickname": "",
     "notable": []
   },
-  "thun": {
-    "founded": "1898",
-    "nickname": "Fussballclub Thun 1898",
+  "talleres (c)": {
+    "founded": "1913",
+    "nickname": "La T",
+    "notable": []
+  },
+  "telstar": {
+    "founded": "1963",
+    "nickname": "De Witte Leeuwen",
+    "notable": []
+  },
+  "tigre": {
+    "founded": "1902",
+    "nickname": "El Matador",
+    "notable": []
+  },
+  "torino": {
+    "founded": "2005",
+    "nickname": "Il Toro",
+    "notable": []
+  },
+  "toronto fc": {
+    "founded": "2005",
+    "nickname": "The Reds",
+    "notable": []
+  },
+  "tottenham hotspur": {
+    "founded": "1882",
+    "nickname": "The Lilywhites",
+    "notable": []
+  },
+  "toulouse": {
+    "founded": "1970",
+    "nickname": "Le Téfécé",
+    "notable": []
+  },
+  "trabzonspor": {
+    "founded": "1967",
+    "nickname": "Karadeniz Fırtınası",
+    "notable": []
+  },
+  "troyes": {
+    "founded": "1986",
+    "nickname": "ESTAC",
+    "notable": []
+  },
+  "tsg hoffenheim": {
+    "founded": "1899",
+    "nickname": "Die Kraichgauer",
     "notable": []
   },
   "tsv hartberg": {
-    "founded": "4500",
-    "nickname": "Turn- und Sportverein Hartberg",
+    "founded": "1946",
+    "nickname": "",
     "notable": []
   },
-  "vaduz": {
-    "founded": "1932",
-    "nickname": "Fussball Club Vaduz",
+  "twente": {
+    "founded": "1965",
+    "nickname": "De Tukkers",
+    "notable": []
+  },
+  "udinese": {
+    "founded": "1919",
+    "nickname": "I Bianconeri",
+    "notable": []
+  },
+  "union": {
+    "founded": "1907",
+    "nickname": "Tatengue",
+    "notable": []
+  },
+  "union berlin": {
+    "founded": "1966",
+    "nickname": "Die Eisernen",
+    "notable": []
+  },
+  "union sg": {
+    "founded": "1897",
+    "nickname": "Les Unionistes",
+    "notable": []
+  },
+  "utrecht": {
+    "founded": "1970",
+    "nickname": "Utreg",
+    "notable": []
+  },
+  "valencia": {
+    "founded": "1919",
+    "nickname": "",
+    "notable": []
+  },
+  "vancouver whitecaps fc": {
+    "founded": "1974",
+    "nickname": "The Blue-and-White",
+    "notable": []
+  },
+  "vasco da gama": {
+    "founded": "1898",
+    "nickname": "Gigante da Colina",
+    "notable": []
+  },
+  "velez sarsfield": {
+    "founded": "1910",
+    "nickname": "El Fortín",
+    "notable": []
+  },
+  "venezia": {
+    "founded": "2005",
+    "nickname": "I Leoni Alati",
+    "notable": []
+  },
+  "vfb stuttgart": {
+    "founded": "1893",
+    "nickname": "Die Roten",
+    "notable": []
+  },
+  "villarreal": {
+    "founded": "1923",
+    "nickname": "El Submarino Amarillo",
+    "notable": []
+  },
+  "vitoria": {
+    "founded": "1899",
+    "nickname": "Leão da Barra",
+    "notable": []
+  },
+  "vitoria de guimaraes": {
+    "founded": "1922",
+    "nickname": "Os Conquistadores",
     "notable": []
   },
   "volos": {
     "founded": "2017",
-    "nickname": "Volos Football Club",
+    "nickname": "",
+    "notable": []
+  },
+  "werder bremen": {
+    "founded": "1899",
+    "nickname": "Die Werderaner",
+    "notable": []
+  },
+  "westerlo": {
+    "founded": "",
+    "nickname": "De Kemphanen",
+    "notable": []
+  },
+  "willem ii": {
+    "founded": "1896",
+    "nickname": "Tricolores",
+    "notable": []
+  },
+  "wolfsberger ac": {
+    "founded": "1931",
+    "nickname": "RZ Pellets WAC",
+    "notable": []
+  },
+  "wsg tirol": {
+    "founded": "1930",
+    "nickname": "",
+    "notable": []
+  },
+  "zenit": {
+    "founded": "1925",
+    "nickname": "Sine-Belo-Golubye",
+    "notable": []
+  },
+  "zulte waregem": {
+    "founded": "2001",
+    "nickname": "Essevee, De Boeren",
     "notable": []
   }
 }
