@@ -6,9 +6,10 @@ a real corpus (see scripts/build_ngram_model.py) rather than RockYou --
 passwords aren't representative of natural-language letter sequences, which
 is exactly the signal this module is meant to add.
 
-Deliberately standalone: NOT wired into wordgen/core/ranker.py or any other
-existing scoring path. This module must be independently validated (see
-tests/test_plausibility.py) before any integration work is considered.
+Wired into wordgen/core/ranker.py as its own independent scoring category
+(see ranker.py's "plausibility" handling in _score/_compute_bounds) --
+independently validated first (tests/test_plausibility.py) before that
+integration, per CLAUDE.md.
 """
 
 from __future__ import annotations
@@ -72,3 +73,21 @@ def plausibility_score(word: str) -> float:
         prob = bigram_probs.get(pair, _UNSEEN_BIGRAM_FLOOR)
         total += math.log(prob)
     return total / len(pairs)
+
+
+@lru_cache(maxsize=1)
+def plausibility_score_bounds() -> tuple[float, float]:
+    """Min/max value plausibility_score() can actually produce, derived
+    analytically from the loaded model rather than sampled from example
+    strings -- mirrors ranker.py's _category_log_bounds (min/max log-weight
+    across a category's whole value range, including its no-signal floor),
+    so a caller combining this score with ranker.py's other per-category
+    scores can min-max normalize it the same way. Since every individual
+    per-bigram term is already a log-probability bounded by
+    [log(_UNSEEN_BIGRAM_FLOOR), log(max observed bigram probability)], and
+    plausibility_score is a mean (convex combination) of those terms, the
+    mean is bounded by the same two extremes -- reached by an all-unseen-
+    bigram string or an all-most-common-bigram string, respectively."""
+    bigram_probs = _load_model()["bigrams"]
+    max_prob = max(bigram_probs.values())
+    return math.log(_UNSEEN_BIGRAM_FLOOR), math.log(max_prob)

@@ -70,7 +70,18 @@ CASES: list[RankingCase] = [
         "tier -- the bonus should not let garbage win just for being tagged a combo. "
         "KNOWN FAILURE -- see CLAUDE.md: this isn't fixable by bonus tuning, it "
         "exposes a real architectural limit (structural case/suffix/leet scoring "
-        "can't tell real content from nonsense content).",
+        "can't tell real content from nonsense content). STILL FAILS after wiring "
+        "in wordgen/core/plausibility.py as a scoring category: plausibility does "
+        "correctly favor 'ahmet' over 'ahmetzzzz' (-6.44 vs -7.28 mean "
+        "log-bigram-probability -> normalized gap ~+0.07 in Ahmet1999's favor), "
+        "but that's nowhere near enough to offset the case_pattern gap between "
+        "capitalized_first and lowercase_only (~-0.83 -- lowercase_only is ~93% "
+        "of real RockYou passwords) plus the suffix gap between year_like and "
+        "'123' (~+0.16) working against it; net effect is still negative. The "
+        "real architectural point survives the fix, just sharpened: capitalizing "
+        "a real name costs far more in log-space than the plausibility gap "
+        "between a real name and a short repeated-letter run gains back, when "
+        "plausibility is only one of five equally-weighted categories.",
     ),
     RankingCase(
         higher=("ahmet1999", True, "date"),
@@ -163,5 +174,37 @@ CASES: list[RankingCase] = [
         "name+year combo. Per real RockYou data, '.' is used as a separator "
         "(~0.067%) noticeably more often than '@' (~0.043%) -- confirms the "
         "intuition that '.' is the more common punctuation-as-joiner choice.",
+    ),
+    # --- Plausibility cases (wordgen/core/plausibility.py, wired into ranker.py's
+    # per-category scoring) -- each pair below deliberately holds case pattern,
+    # suffix, leet, and separator identical (and combo_kind, so the bonus
+    # cancels too), so plausibility is the *only* category free to differ. This
+    # isolates the new signal instead of conflating it with the categories
+    # above -- see CLAUDE.md's Plausibility section for why the Ahmet1999 vs
+    # ahmetzzzz123 case (below) still doesn't flip even with plausibility wired
+    # in.
+    RankingCase(
+        higher=("ahmet1999", True, "date"),
+        lower=("qxzvb1999", True, "date"),
+        reason="PLAUSIBILITY CASE: identical suffix (year_like), case pattern "
+        "(lowercase_only), and combo_kind ('date', so COMBO_BONUS cancels) on "
+        "both sides -- a real name+year combo should still beat a random "
+        "consonant-cluster+year combo, since plausibility is the only category "
+        "left free to differ.",
+    ),
+    RankingCase(
+        higher=("ahmetcimbom", True, "team"),
+        lower=("qxzvbfghjk", True, "team"),
+        reason="PLAUSIBILITY CASE: identical case pattern (lowercase_only), no "
+        "suffix on either side, and combo_kind ('team') on both -- a real "
+        "name+nickname combo should beat a same-shape combo built from random "
+        "consonant clusters on both sides.",
+    ),
+    RankingCase(
+        higher=("sarah2001", True, "date"),
+        lower=("xqzak2001", True, "date"),
+        reason="PLAUSIBILITY CASE: mirrors the ahmet1999/qxzvb1999 case with a "
+        "different name+year pair, to check the plausibility signal isn't an "
+        "artifact of 'ahmet' specifically.",
     ),
 ]

@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Iterable, Union
 
 from wordgen.core.combiner import Candidate
+from wordgen.core.plausibility import plausibility_score, plausibility_score_bounds
 
 _WEIGHTS_PATH = Path(__file__).resolve().parent.parent / "data" / "weights.json"
 
@@ -275,6 +276,10 @@ def _compute_bounds(weights: dict) -> dict[str, tuple[float, float]]:
         "suffixes": _category_log_bounds(weights.get("suffixes", {})),
         "leet_subs": _category_log_bounds(leet_subs, floor=_no_leet_weight(leet_subs)),
         "separators": _category_log_bounds(separators, floor=_no_separator_weight(separators)),
+        # Not derived from `weights` (RockYou has nothing to say about
+        # natural-language bigram plausibility) -- its own analytically
+        # derived bounds, see plausibility_score_bounds().
+        "plausibility": plausibility_score_bounds(),
     }
 
 
@@ -304,14 +309,27 @@ def _score(candidate: str, weights: dict, bounds: dict[str, tuple[float, float]]
     # separator character (some of which, @ and $, double as leet-substitution
     # digits) were ever meant to read as a letter substitution. Keeps the
     # three categories from double-counting the same character.
-    leet_candidate = _strip_recognized_suffix(candidate, suffix)
+    base_content = _strip_recognized_suffix(candidate, suffix)
     _, sep_char = _classify_separator(candidate)
     if sep_char:
-        leet_candidate = leet_candidate.replace(sep_char, "", 1)
-    leet_score = _leet_signal(leet_candidate, leet_subs)
+        base_content = base_content.replace(sep_char, "", 1)
+    leet_score = _leet_signal(base_content, leet_subs)
     leet_norm = _normalize(math.log(leet_score), bounds["leet_subs"])
 
-    return case_norm + suffix_norm + leet_norm + sep_norm
+    # Plausibility (wordgen/core/plausibility.py): scored on the same
+    # suffix/separator-stripped base_content as leet detection above, so
+    # "ahmet1999" is scored on "ahmet"'s bigram plausibility, not the whole
+    # mangled string's. plausibility_score() already returns a *length-
+    # normalized mean* log-bigram-probability -- it is NOT a raw frequency
+    # weight like the other categories, so unlike them it is min-max
+    # normalized directly (no extra math.log() here, which would
+    # double-transform an already-log value, and no summing it unnormalized
+    # alongside the raw per-category log-weights above, which would
+    # reintroduce exactly the length bias plausibility_score's own averaging
+    # was built to avoid -- see CLAUDE.md).
+    plaus_norm = _normalize(plausibility_score(base_content), bounds["plausibility"])
+
+    return case_norm + suffix_norm + leet_norm + sep_norm + plaus_norm
 
 
 def rank(candidates: Iterable[Union[Candidate, tuple[str, bool, Union[str, None]]]]) -> list[str]:
