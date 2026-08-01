@@ -108,7 +108,7 @@ def run_hashcat(
             str(hash_file),
             str(wordlist),
             "--potfile-disable",
-            "--outfile-format=2",
+            "--outfile-format=1,3",
             "-o",
             str(outfile),
             *(extra_args or []),
@@ -130,8 +130,12 @@ def run_hashcat(
         for line in outfile.read_text(encoding="utf-8").splitlines():
             if ":" not in line:
                 continue
-            hash_value, plaintext = line.split(":", 1)
-            cracked[hash_value] = plaintext
+            # --outfile-format=1,3 -> "hash[:salt]:hex_plain". rsplit (not
+            # split) on the *last* colon, since a salted hash's own
+            # hash[:salt] field can itself contain a colon -- splitting on
+            # the first one would tear the salt off into the plaintext field.
+            hash_value, hex_plaintext = line.rsplit(":", 1)
+            cracked[hash_value] = bytes.fromhex(hex_plaintext).decode("utf-8")
         return cracked
 
 

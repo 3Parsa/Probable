@@ -91,8 +91,9 @@ def test_eval_hashcat_routes_through_harness(tmp_path, monkeypatch):
     monkeypatch.setattr(shutil, "which", lambda _bin: "/usr/bin/hashcat")
 
     def fake_run(cmd, capture_output, text, check):
+        # Real hashcat --outfile-format=1,3 output shape: "hash:hex_plain".
         outfile = Path(cmd[cmd.index("-o") + 1])
-        outfile.write_text("deadbeef:target_password\n", encoding="utf-8")
+        outfile.write_text(f"deadbeef:{'target_password'.encode().hex()}\n", encoding="utf-8")
         return subprocess.CompletedProcess(cmd, returncode=0, stdout="", stderr="")
 
     monkeypatch.setattr(subprocess, "run", fake_run)
