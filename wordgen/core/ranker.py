@@ -122,6 +122,9 @@ _LEET_KEYS = {
 # under "separators" below) and from @/$'s unrelated leet-substitution role
 # (scored under "leet_subs"). All three categories are looked up and stripped
 # independently so none of them double-count the same character.
+# "_", ".", "-", "#", "$", "@" are the high-value tier; "&", "*", "+", "%"
+# are the medium-value tier, added the same way (see rules.py's _AFFIXES and
+# combiner.py's _SEPARATORS).
 _SUFFIX_CHAR_NAMES = {
     "_": "underscore",
     ".": "dot",
@@ -129,6 +132,10 @@ _SUFFIX_CHAR_NAMES = {
     "#": "hash",
     "$": "dollar",
     "@": "at_symbol",
+    "&": "ampersand",
+    "*": "asterisk",
+    "+": "plus",
+    "%": "percent",
 }
 
 # Heuristic for "a separator character joining an alphabetic run to a numeric
@@ -137,7 +144,7 @@ _SUFFIX_CHAR_NAMES = {
 # category. Deliberately simple: full-string match, single separator char,
 # alpha on one side and digits on the other.
 _SEPARATOR_RE = re.compile(
-    r"^[A-Za-z]+([_.\-#$@])\d+$|^\d+([_.\-#$@])[A-Za-z]+$"
+    r"^[A-Za-z]+([_.\-#$@&*+%])\d+$|^\d+([_.\-#$@&*+%])[A-Za-z]+$"
 )
 
 
@@ -206,6 +213,10 @@ _SUFFIX_LENGTHS = {
     "hash": 1,
     "dollar": 1,
     "at_symbol": 1,
+    "ampersand": 1,
+    "asterisk": 1,
+    "plus": 1,
+    "percent": 1,
 }
 
 

@@ -148,8 +148,10 @@ def _combo_bases(token: Token) -> list[str]:
 # Joiner characters the combiner can place between two combo bases, in
 # addition to direct concatenation - real passwords commonly separate a name
 # from a date/team fact with a punctuation character rather than jamming them
-# together (e.g. "ahmet_1998").
-_SEPARATORS = ["_", ".", "-", "#", "$", "@"]
+# together (e.g. "ahmet_1998"). "_", ".", "-", "#", "$", "@" are the
+# high-value tier; "&", "*", "+", "%" are the medium-value tier, added the
+# same way (see rules.py's _AFFIXES for their standalone-suffix counterpart).
+_SEPARATORS = ["_", ".", "-", "#", "$", "@", "&", "*", "+", "%"]
 
 
 def _light_mangle(combo: str) -> Iterator[str]:

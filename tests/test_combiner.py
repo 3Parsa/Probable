@@ -32,9 +32,9 @@ def test_combo_count_stays_small_not_full_cross_product():
 
     # Base-value cross (direct concat + separator-joined, 2 orders each, x
     # light mangle) should stay a bounded handful, not anywhere near 9 name
-    # variants x 16 date variants = 144+. 1 base each x (2 direct + 6
-    # separators x 2 orders) x up to 2 mangle variants = up to 28.
-    assert 0 < len(combos) <= 28
+    # variants x 16 date variants = 144+. 1 base each x (2 direct + 10
+    # separators x 2 orders) x up to 2 mangle variants = up to 44.
+    assert 0 < len(combos) <= 44
 
 
 def test_no_junk_from_crossing_expanded_variants():
@@ -117,6 +117,27 @@ def test_separator_joined_combos_appear_for_name_team():
     assert "ahmet_1907" in results
     assert "ahmet_Fener" in results
     assert "1907_ahmet" in results
+
+
+def test_medium_value_separator_joined_combos_appear_for_name_date():
+    tokens = [Token(type="name", value="ahmet"), Token(type="date", value="1999")]
+    results = _combo_values(tokens)
+
+    for sep in ["&", "*", "+", "%"]:
+        assert f"ahmet{sep}1999" in results
+        assert f"1999{sep}ahmet" in results
+
+    # direct concatenation combos still present alongside the separated ones
+    assert "ahmet1999" in results
+
+
+def test_medium_value_separator_joined_combos_appear_for_name_team():
+    tokens = [Token(type="name", value="ahmet"), Token(type="team", value="fenerbahce")]
+    results = _combo_values(tokens)
+
+    assert "ahmet&1907" in results
+    assert "ahmet*Fener" in results
+    assert "1907+ahmet" in results
 
 
 def test_combo_flag_distinguishes_cross_products_from_standalone_expansions():

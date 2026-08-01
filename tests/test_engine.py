@@ -112,6 +112,27 @@ def test_no_generated_candidate_ever_contains_a_literal_space():
     assert not leaked, f"literal space leaked into generated candidates: {leaked}"
 
 
+def test_medium_value_characters_never_leak_a_literal_space():
+    """The medium-value separator/suffix tier (&, *, +, %) is ASCII, no
+    different in kind from the high-value tier the space-safety-net was
+    built for -- this confirms that assumption with a real generate() run
+    rather than just asserting it, using the same token shapes as
+    test_no_generated_candidate_ever_contains_a_literal_space above."""
+    tokens = [
+        Token(type="team", value="Bayern Munich"),
+        Token(type="place", value="New York"),
+        Token(type="name", value="Bardiya"),
+        Token(type="date", value="1995-03-15"),
+    ]
+    results = generate(tokens, size="large")
+
+    assert any(c in "&*+%" for value in results for c in value), (
+        "expected at least one candidate using a medium-value tier character"
+    )
+    leaked = [value for value in results if " " in value]
+    assert not leaked, f"literal space leaked into generated candidates: {leaked}"
+
+
 def test_standalone_penalty_repro_case():
     """Real bug repro, kept as a permanent regression guard: this exact
     7-token set at `medium` size used to put bare, un-personalized

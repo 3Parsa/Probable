@@ -53,6 +53,14 @@ def test_new_separator_suffixes():
     assert "bob@" in results
 
 
+def test_medium_value_separator_suffixes():
+    results = set(expand(Token(type="name", value="bob")))
+    assert "bob&" in results
+    assert "bob*" in results
+    assert "bob+" in results
+    assert "bob%" in results
+
+
 def test_pet_place_partner_custom_use_same_rules_as_name():
     for token_type in ("pet", "place", "partner", "custom"):
         results = set(expand(Token(type=token_type, value="Rex")))

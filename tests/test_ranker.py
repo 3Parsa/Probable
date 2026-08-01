@@ -183,6 +183,34 @@ def test_classify_suffix_recognizes_new_suffix_characters():
     assert _classify_suffix("bob@") == "at_symbol"
 
 
+def test_classify_suffix_recognizes_medium_value_suffix_characters():
+    from wordgen.core.ranker import _classify_suffix
+
+    assert _classify_suffix("bob&") == "ampersand"
+    assert _classify_suffix("bob*") == "asterisk"
+    assert _classify_suffix("bob+") == "plus"
+    assert _classify_suffix("bob%") == "percent"
+
+
+def test_classify_separator_recognizes_medium_value_joiner():
+    from wordgen.core.ranker import _classify_separator
+
+    assert _classify_separator("ahmet&1999") == ("ampersand", "&")
+    assert _classify_separator("1999*ahmet") == ("asterisk", "*")
+
+
+def test_new_medium_value_characters_do_not_crash_or_misbehave():
+    candidates = [
+        ("ahmet&1999", True, "date"),
+        ("ahmet*1999", True, "date"),
+        ("1999+ahmet", True, "date"),
+        ("bob%", False, None),
+        ("bob&", False, None),
+    ]
+    results = rank(candidates)
+    assert set(results) == {value for value, _, _ in candidates}
+
+
 def test_classify_separator_recognizes_joiner_between_alpha_and_digits():
     from wordgen.core.ranker import _classify_separator
 

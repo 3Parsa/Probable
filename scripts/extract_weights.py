@@ -20,6 +20,9 @@ OUTPUT_PATH = Path(__file__).resolve().parent.parent / "wordgen" / "data" / "wei
 YEAR_SUFFIX_RE = re.compile(r"(19|20)\d{2}$")
 LEET_PAIRS = {"4": "a", "3": "e", "1": "i", "0": "o", "5": "s", "@": "a", "$": "s"}
 
+# "_", ".", "-", "#", "$", "@" are the high-value tier; "&", "*", "+", "%"
+# are the medium-value tier, added the same way (mirrors
+# wordgen/core/ranker.py's _SUFFIX_CHAR_NAMES exactly).
 SUFFIX_CHAR_NAMES = {
     "_": "underscore",
     ".": "dot",
@@ -27,6 +30,10 @@ SUFFIX_CHAR_NAMES = {
     "#": "hash",
     "$": "dollar",
     "@": "at_symbol",
+    "&": "ampersand",
+    "*": "asterisk",
+    "+": "plus",
+    "%": "percent",
 }
 
 # Heuristic for "separator joining an alphabetic run to a numeric run" (e.g.
@@ -34,7 +41,7 @@ SUFFIX_CHAR_NAMES = {
 # _SEPARATOR_RE exactly, so the extracted frequencies match what the ranker
 # will actually look up.
 SEPARATOR_RE = re.compile(
-    r"^[A-Za-z]+([_.\-#$@])\d+$|^\d+([_.\-#$@])[A-Za-z]+$"
+    r"^[A-Za-z]+([_.\-#$@&*+%])\d+$|^\d+([_.\-#$@&*+%])[A-Za-z]+$"
 )
 
 

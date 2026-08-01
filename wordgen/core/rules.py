@@ -66,8 +66,9 @@ _LEET_MAP = {
 # Trailing affixes: numeric/punctuation suffixes, plus the separator characters
 # in their standalone-suffix role (see combiner.py for their other role, joining
 # combo bases together - the two roles are scored as distinct categories in
-# ranker.py, never conflated).
-_AFFIXES = ["123", "!", "?", "1", "_", ".", "-", "#", "$", "@"]
+# ranker.py, never conflated). "_", ".", "-", "#", "$", "@" are the high-value
+# tier; "&", "*", "+", "%" are the medium-value tier, added the same way.
+_AFFIXES = ["123", "!", "?", "1", "_", ".", "-", "#", "$", "@", "&", "*", "+", "%"]
 
 
 def expand_name(token: Token) -> Iterator[str]:
