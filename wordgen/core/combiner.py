@@ -106,16 +106,16 @@ def expand_multiword_value(value: str) -> list[str]:
     overwhelmingly common case).
 
     Used in two places, for two different reasons: _team_combo_bases below
-    feeds each variant into the normal base cross-product as its own base,
-    so crossing "Bardiya" against the "Die_Bayern" variant naturally
-    produces "Bardiya_Die_Bayern" (outer "_" join + already "_"-joined
-    inner words) alongside "BardiyaDieBayern" (outer direct-concat +
-    stripped inner). engine.py's _normalize_spaces also calls this directly
-    as a final catch-all safety net for *any* remaining space-containing
-    candidate regardless of source (e.g. a raw operator-typed multi-word
-    team/place/etc. value echoed as a standalone candidate) -- see its
-    docstring for why that backstop exists on top of, not instead of,
-    fixing each source (this function) individually."""
+    takes only this list's first (direct-concat) entry as its combo base --
+    NOT the full separator-variant list, which was tried first and caused a
+    real double-separator-expansion bug (each pre-separated variant getting
+    crossed again by _joined_combos' own separator set -- see
+    _team_combo_bases' docstring). engine.py's _normalize_spaces calls this
+    directly (using the full list) as a final catch-all safety net for *any*
+    remaining space-containing candidate regardless of source (e.g. a raw
+    operator-typed multi-word team/place/etc. value echoed as a standalone
+    candidate) -- see its docstring for why that backstop exists on top of,
+    not instead of, fixing each source individually."""
     words = value.split()
     if len(words) < 2:
         return [value]
@@ -129,12 +129,27 @@ def _team_combo_bases(token: Token) -> list[str]:
     expand_team()'s own yielded candidates -- expand_team() already strips a
     multi-word nickname down to one stripped-together form for its own
     standalone-candidate purposes, which would throw away the word
-    boundaries expand_multiword_value needs to build separator-joined
-    variants."""
-    bases: list[str] = []
-    for value in team_related_values(token):
-        bases.extend(expand_multiword_value(value))
-    return bases
+    boundaries expand_multiword_value needs.
+
+    Takes only expand_multiword_value()'s first (direct-concat) form per
+    related value, not its full separator-variant list (real bug, found via
+    a real repro: Token("name", "Michael1995") + Token("team", "liverpool")
+    produced 264 combo candidates for a *single* token pair, the large
+    majority nested-separator junk like "The_Reds.Michael1995"). Taking every
+    separator variant as its own base meant each one then got crossed AGAIN
+    by _joined_combos' own full separator set below -- a nickname's 11
+    internally-pre-separated variants (direct-concat + 10 separators) times
+    _joined_combos' 22 join options each is 242 combos from one related value
+    alone, before even counting founding year / notable names. This is the
+    same "crossed full expansion sets instead of base values" root cause as
+    the project's original combiner bug, just reached through this
+    later-added multiword-nickname path instead. One canonical base per
+    related value (its plain direct-concat form, e.g. "TheReds") lets the
+    outer _joined_combos below supply all the separator diversity -- exactly
+    how every other combo pair (name+date, pet+date) already works -- while
+    still producing clean results like "MichaelTheReds"/"TheReds_Michael1995"
+    without the nested-separator double expansion."""
+    return [expand_multiword_value(value)[0] for value in team_related_values(token)]
 
 
 def _combo_bases(token: Token) -> list[str]:
@@ -152,6 +167,25 @@ def _combo_bases(token: Token) -> list[str]:
 # high-value tier; "&", "*", "+", "%" are the medium-value tier, added the
 # same way (see rules.py's _AFFIXES for their standalone-suffix counterpart).
 _SEPARATORS = ["_", ".", "-", "#", "$", "@", "&", "*", "+", "%"]
+
+
+def shape_family(value: str) -> str:
+    """Collapses a candidate down to its "shape family" key: every joiner
+    separator character stripped out, so candidates that differ only by
+    which separator (or none) joins the same two combo bases collapse to
+    the same key -- e.g. "TheReds_Michael1995", "TheReds.Michael1995", and
+    "TheRedsMichael1995" (direct concat) all collapse to
+    "TheRedsMichael1995". Used by engine.py's output-diversity pass to keep
+    one combo pattern's separator variants (there are up to 11: direct
+    concat + one per _SEPARATORS character) from crowding out every other
+    distinct idea near the top of ranked output -- real repro: a
+    Michael1995+liverpool combo put 9 near-identical TheReds*Michael1995
+    variants in the first 9 slots of a top-11 result, differing from each
+    other only by separator character."""
+    result = value
+    for sep in _SEPARATORS:
+        result = result.replace(sep, "")
+    return result
 
 
 def _light_mangle(combo: str) -> Iterator[str]:

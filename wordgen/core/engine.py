@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections import deque
 from typing import Iterator
 
-from wordgen.core.combiner import Candidate, combine, expand_multiword_value
+from wordgen.core.combiner import Candidate, combine, expand_multiword_value, shape_family
 from wordgen.core.ranker import rank
 from wordgen.core.tokens import Token
 
@@ -55,8 +56,54 @@ def _normalize_spaces(candidates: Iterator[Candidate]) -> Iterator[Candidate]:
                 yield candidate._replace(value=variant)
 
 
+def _diversify(ranked: list[str]) -> list[str]:
+    """Output-diversity pass, applied after ranking and before size
+    truncation. Real bug (see CLAUDE.md): the ranker scores each candidate
+    independently with no concept of output diversity, so when one combo
+    pattern scores well, ALL of its separator variants score nearly
+    identically and cluster together -- a real Michael1995+liverpool combo
+    put 9 near-identical TheReds*Michael1995 variants (differing only by
+    separator character) in the first 9 of the top 11 results, crowding out
+    every other distinct candidate.
+
+    Groups candidates into "shape families" via combiner.shape_family()
+    (same base combo, separators stripped) and round-robins across
+    families in score order rather than emitting a whole family
+    consecutively: each pass takes one (the next-highest-scoring) member
+    from every family that still has one left, so no family can occupy two
+    output slots before every other family present has had a turn. The
+    single highest-scoring candidate overall still leads the output --
+    this reorders which candidates get *deferred*, not which one wins the
+    top spot -- and a family with only one member is untouched.
+
+    Applied to the full ranked list before size truncation (not just the
+    top N) so a "small"/"medium" truncation afterward draws from an
+    already-diversified pool, rather than the tier cutoff landing mid-family
+    and this pass never getting a chance to run on the rest.
+    """
+    families: dict[str, deque[str]] = {}
+    family_order: list[str] = []
+    for value in ranked:
+        key = shape_family(value)
+        if key not in families:
+            families[key] = deque()
+            family_order.append(key)
+        families[key].append(value)
+
+    result: list[str] = []
+    while family_order:
+        next_order = []
+        for key in family_order:
+            bucket = families[key]
+            result.append(bucket.popleft())
+            if bucket:
+                next_order.append(key)
+        family_order = next_order
+    return result
+
+
 def generate(tokens: list[Token], size: str = "large") -> list[str]:
-    ranked = rank(_normalize_spaces(combine(tokens)))
+    ranked = _diversify(rank(_normalize_spaces(combine(tokens))))
     limit = _SIZE_LIMITS[size]
     if limit is None:
         return ranked

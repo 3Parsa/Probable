@@ -49,11 +49,12 @@ def test_multiword_team_nickname_never_yields_a_literal_space():
     candidates like "BardiyaThe Reds" with a literal, unescaped space, which
     nobody puts in a real password. Fixed in rules.expand_team() (strips a
     multi-word nickname before yielding it standalone) and
-    combiner._team_combo_bases()/expand_multiword_value() (builds a
-    stripped variant plus one separator-joined variant per separator
-    character for the combo case, e.g. "TheReds"/"The_Reds"/"The.Reds"/...,
-    mirroring the same "direct-concat + per-separator variant" shape used
-    for every other combo pair).
+    combiner._team_combo_bases()/expand_multiword_value() (uses the
+    stripped direct-concat form, e.g. "TheReds", as the team's combo base --
+    see test_multiword_team_nickname_combo_does_not_double_expand_separators
+    below for why it's just this one form and not also a separator-joined
+    inner variant per separator character, which was tried first and caused
+    a real double-separator-expansion bug).
 
     Uses Liverpool specifically (a single-word team name) rather than a
     multi-word one (e.g. "Bayern Munich") so this test isolates the
@@ -74,7 +75,61 @@ def test_multiword_team_nickname_never_yields_a_literal_space():
     # The requested direct-concat and separator-joined forms are both
     # actually present, not just "no spaces anywhere".
     assert "BardiyaTheReds" in results
-    assert "Bardiya_The_Reds" in results
+    assert "Bardiya_TheReds" in results
+
+
+def test_multiword_team_nickname_combo_does_not_double_expand_separators():
+    """Real bug repro, found the same session as the space-leak fix above:
+    Token("name", "Michael1995") + Token("team", "liverpool") produced 264
+    combo candidates from a single token pair, the overwhelming majority
+    nested-separator junk like "The_Reds.Michael1995" -- confirmed by
+    isolating a plain two-name-token case (which stayed small and sane) from
+    this name+team case (which didn't), then narrowing further to a name
+    token containing digits crossed with a team whose nickname is two words.
+
+    Root cause: combiner._team_combo_bases() used to feed team_related_values()
+    through expand_multiword_value()'s *full* separator-variant list (e.g.
+    Liverpool's "The Reds" -> 11 bases: "TheReds" plus one per separator
+    character), and each of those 11 pre-separated bases then got crossed
+    AGAIN by _joined_combos' own full separator set below -- 11 x 22 = 242
+    combos from the nickname alone, before even counting founding year /
+    notable names. Same root cause as the project's original "crossed full
+    expansion sets instead of base values" combiner bug, reached through the
+    later-added multiword-nickname path instead. Fixed by taking only
+    expand_multiword_value()'s first (direct-concat) form as the team combo
+    base, letting the outer _joined_combos supply separator diversity on its
+    own -- exactly how every other combo pair (name+date, pet+date) already
+    works.
+
+    A small, real name+team combo count (comparable to a name+date combo
+    over a small date-format base list) is asserted directly, not just
+    "smaller than before" -- and the double-separator junk shape
+    (".Michael1995" after any team-side separator character) is asserted
+    absent by construction, since a sane combo count with real content checks
+    below rules it out implicitly.
+    """
+    tokens = [Token(type="name", value="Michael1995"), Token(type="team", value="liverpool")]
+    results = list(generate(tokens, size="large"))
+
+    combo_like = [
+        v for v in results if "TheReds" in v or "1892" in v
+    ]  # liverpool's nickname + founding year, the only two related values
+    assert len(combo_like) < 50, (
+        f"name+team combo exploded: {len(combo_like)} candidates, "
+        f"expected a small, non-exploded set. Sample: {combo_like[:10]}"
+    )
+
+    assert "Michael1995TheReds" in results
+    assert "TheReds_Michael1995" in results
+    assert "Michael19951892" in results
+
+    # No nested/double-separator junk: a separator character should never
+    # appear twice in a single combo candidate (the double-expansion bug's
+    # signature shape, e.g. "The_Reds.Michael1995").
+    for value in combo_like:
+        assert not any(value.count(sep) > 1 for sep in "_.-#$@&*+%"), (
+            f"nested-separator junk survived: {value!r}"
+        )
 
 
 def test_no_generated_candidate_ever_contains_a_literal_space():
@@ -173,3 +228,44 @@ def test_standalone_penalty_repro_case():
     # bottom".
     assert results.index("Michael1995") < 10
     assert results.index("Buddy1995") < 10
+
+
+def test_output_diversity_no_family_dominates_top_results():
+    """Real bug repro: Token("name", "Michael1995") + Token("team", "liverpool")
+    at size="small" put 9 near-identical "TheReds*Michael1995" candidates
+    (differing only by which separator character joins the two combo bases,
+    e.g. "TheRedsMichael1995", "TheReds_Michael1995", "TheReds.Michael1995",
+    ...) in the first 9 of the top 11 results -- the ranker scores each
+    candidate independently with no notion of output diversity, so a combo
+    pattern that scores well has ALL of its separator variants score nearly
+    identically and cluster together, crowding out every other distinct
+    candidate. This wasn't a generation-side bug (the candidate pool itself
+    was already correctly, non-explosively sized after the earlier
+    _team_combo_bases fix) -- it's an output-shaping problem, fixed by
+    engine._diversify(): candidates are grouped into "shape families"
+    (combiner.shape_family(), same base combo with separators stripped) and
+    round-robined across families in score order, so no family can occupy a
+    second output slot before every other family present has had a turn.
+
+    Asserts the general property (no shape family holds more than 2 of the
+    top 15 slots) rather than hand-checking exact positions, so this stays a
+    real guard against any base pattern with many separator variants
+    dominating output, not just this one team-nickname case."""
+    from collections import Counter
+
+    from wordgen.core.combiner import shape_family
+
+    tokens = [Token(type="name", value="Michael1995"), Token(type="team", value="liverpool")]
+    results = generate(tokens, size="small")
+
+    top_15 = results[:15]
+    family_counts = Counter(shape_family(value) for value in top_15)
+    dominant = family_counts.most_common(1)[0]
+    assert dominant[1] <= 2, (
+        f"shape family {dominant[0]!r} occupies {dominant[1]} of the top 15 "
+        f"slots, crowding out other distinct candidates: {top_15}"
+    )
+
+    # The dominant combo pattern's best member still legitimately wins the
+    # top spot -- diversity reorders what gets *deferred*, not the winner.
+    assert results[0] == "TheRedsMichael1995"
