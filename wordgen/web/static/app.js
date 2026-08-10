@@ -12,7 +12,7 @@ const copyBtn = document.getElementById("copy-btn");
 // the fields' placeholder text so the filled-in form and the placeholders
 // tell the same story.
 const EXAMPLE_VALUES = {
-  names: "Michael, Michael1995",
+  names: "Michael",
   dates: "1995-03-15",
   pets: "Buddy",
   teams: "Liverpool",
